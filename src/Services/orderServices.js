@@ -47,6 +47,7 @@ class orderService {
           dateOrder: order.created_at.substring(10, -1),
           clientOrder: idClient,
           orderId: order.id.toString(),
+          orderName: order.name, 
           statusOrder: "Creada",
           payStatusOrder: order.financial_status,
           paymentMethod: payMethod,
