@@ -28,10 +28,10 @@ class clientService {
       Municipio: idMunicipality,
       Departamento1: idMunicipality,
       location: {
-        country: "Colombia",
-        district_city: clientData.default_address.city,
-        state_province: clientData.default_address.province,
-        address_line_1: clientData.default_address.address1,
+        country2: "Colombia",
+        district_city2: clientData.default_address.city,
+        state_province2: clientData.default_address.province,
+        address_line_12: clientData.default_address.address1,
       },
       Tipo_Direccion: "Casa",
       Tipo: "Detal",
@@ -39,8 +39,6 @@ class clientService {
       Estado: "Activo",
       Zona: "1889220000135235205",
     };
-
-    console.log(newClient)
 
     // Try- catch => Errors
     try {

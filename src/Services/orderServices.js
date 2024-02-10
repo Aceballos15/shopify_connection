@@ -36,12 +36,6 @@ class orderService {
           products.push(product_detail);
         });
 
-        var payMethod = ""
-
-        order.payment_gateway_names.forEach(method => {
-          payMethod += ` ${method} `
-        })
-
         // build the new order collection
         const new_order = {
           dateOrder: order.created_at.substring(10, -1),
@@ -49,8 +43,8 @@ class orderService {
           orderId: order.id.toString(),
           orderName: order.name, 
           statusOrder: "Creada",
+          paymentValidate: "Pendiente",
           payStatusOrder: order.financial_status,
-          paymentMethod: payMethod,
           totalOrder: parseFloat(order.current_subtotal_price),
           shippingOrder: parseFloat(order.shipping_lines[0].price),
           paymentOrderValue: parseFloat(order.total_price),
@@ -64,7 +58,6 @@ class orderService {
         console.log(
           `Order created succesfully.....ID orden: ${response.data.ID}`
         );
-
         return response;
       } else {
         return {
@@ -109,7 +102,6 @@ class orderService {
       if(!validateOrderExists.status){
         console.log("Order doesn't exist in zoho database")
       }else{
-
         // Url and new data to update this order 
         const updateOrderUrl =`https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/ordersShopify/${validateOrderExists.idOrder}`;
         const new_data = {
@@ -118,8 +110,8 @@ class orderService {
 
         // Patch request and response log 
         const updateOrder = await axios.patch(updateOrderUrl, new_data);
-        if(updateOrder.data){
-          console.log(`Order Canceled succesfully. Order id: ${updateOrder.data.ID}`)
+        if(updateOrder.data !== null ){
+          console.log(`Order Canceled succesfully. Order id: ${updateOrder.data}`)
         } 
 
       }

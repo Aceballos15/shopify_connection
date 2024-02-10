@@ -1,12 +1,13 @@
 const { Router } = require("express");
 const axios = require("axios");
 const router = Router();
-const order = require("../../pruebaOrden.json");
 
 // instance of client service
 const clientService = require("../Services/clientServices");
 // instance of order service
 const orderService = require("../Services/orderServices");
+// instance of transaction object
+const transactionService = require("../Services/transactionService");
 
 //Principal router to received the webhook
 router.post("/create_order", async (req, res) => {
@@ -26,7 +27,6 @@ router.post("/create_order", async (req, res) => {
       idClient = findClient.data[0].ID;
     } else {
       // create client if no exists
-      console.log("client not found..... Creating...");
       const newClient = new clientService();
       idClient = await newClient.createClient(customerData);
       if (idClient != null) {
@@ -49,17 +49,17 @@ router.post("/create_order", async (req, res) => {
   }
 });
 
+// router to cancell an order
+router.post("/cancel_order", async (req, res) => {
+  try {
+    const orderCancellation = new orderService();
+    await orderCancellation.cancelOrder(req.body);
+  } catch (error) {
+    console.error(error);
+  }
+});
 
-// router to cancell an order 
-router.post("/cancel_order", async (req, res) =>{
-
-    const orderCancellation = new orderService; 
-    await orderCancellation.cancelOrder(req.body)
-  
-})
-
-
-
+//router to create all products 
 router.post("/create_products", async (req, res) => {
   const urlProduct =
     "https://tiendaxhobbies.myshopify.com/admin/api/2024-01/products.json?limit=250&&status=active";
@@ -73,8 +73,7 @@ router.post("/create_products", async (req, res) => {
 
   const allProducts = response.data.products;
 
-
-  console.log(allProducts.length)
+  console.log(allProducts.length);
 
   allProducts.forEach(async (product_response) => {
     var statusProduct = "";
@@ -119,22 +118,20 @@ router.post("/create_products", async (req, res) => {
       new_product
     );
 
-    console.log(insertProduct.data)
-
+    console.log(insertProduct.data);
   });
 
   res.status(200).send("Creado correctamente");
 });
 
-
-
-
-router.post("/transaction_creation", (req, res) => {
-
-  console.log("Payment Created...")
-
-  console.log(req.body)
-
-})
+//router to create a new transaction 
+router.post("/transaction_creation", async (req, res) => {
+  try {
+    const newTransaction = new transactionService();
+    await newTransaction.createTransaction(req.body);
+  } catch (error) {
+    console.error(error);
+  }
+});
 
 module.exports = router;
