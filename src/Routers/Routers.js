@@ -54,6 +54,9 @@ router.post("/cancel_order", async (req, res) => {
   try {
     const orderCancellation = new orderService();
     await orderCancellation.cancelOrder(req.body);
+
+    res.send(orderCancellation)
+    
   } catch (error) {
     console.error(error);
   }
@@ -133,5 +136,7 @@ router.post("/transaction_creation", async (req, res) => {
     console.error(error);
   }
 });
+
+
 
 module.exports = router;

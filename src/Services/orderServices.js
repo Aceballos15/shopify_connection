@@ -94,13 +94,16 @@ class orderService {
 
 
   // method to cancell an order 
-  async cancelOrder(order) {
+  async cancelOrder(order, req, res) {
     try {
 
       // Validate if exists an order with this order.id
       const validateOrderExists = await this.validateOrder(order.id); 
       if(!validateOrderExists.status){
+
         console.log("Order doesn't exist in zoho database")
+        return "order doesn't exist in zoho database"
+
       }else{
         // Url and new data to update this order 
         const updateOrderUrl =`https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/ordersShopify/${validateOrderExists.idOrder}`;
@@ -115,6 +118,7 @@ class orderService {
         } 
 
       }
+      
     } catch (error) {  
       console.error(error)
     }
