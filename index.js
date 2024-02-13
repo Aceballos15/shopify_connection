@@ -26,7 +26,7 @@ app.post('/webhook', (req, res) => {
 
 // usar las rutas de routers 
 const routers = require("./src/Routers/Routers")
-app.use("/pruebas", routers)
+app.use("/API/v1", routers)
 
 
 

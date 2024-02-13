@@ -79,7 +79,7 @@ class orderService {
       if (findOrder.data.length > 0) {
         return {
           status: true, 
-          idOrder: findOrder.data.ID
+          idOrder: findOrder.data[0].ID
         };
       // else return status false 
       } else {
@@ -100,11 +100,9 @@ class orderService {
       // Validate if exists an order with this order.id
       const validateOrderExists = await this.validateOrder(order.id); 
       if(!validateOrderExists.status){
-
-        console.log("Order doesn't exist in zoho database")
-        return "order doesn't exist in zoho database"
-
+        console.log("Order canceled doesn't exist in zoho database")
       }else{
+
         // Url and new data to update this order 
         const updateOrderUrl =`https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/ordersShopify/${validateOrderExists.idOrder}`;
         const new_data = {
@@ -114,8 +112,13 @@ class orderService {
         // Patch request and response log 
         const updateOrder = await axios.patch(updateOrderUrl, new_data);
         if(updateOrder.data !== null ){
-          console.log(`Order Canceled succesfully. Order id: ${updateOrder.data}`)
+          console.log(`Order Canceled succesfully. Order id: ${JSON.stringify(updateOrder.data)}`)
+
+
+
         } 
+
+
 
       }
       

@@ -5,7 +5,7 @@ class transactionService {
 
   // Method to create a new transaction for an order 
   async createTransaction(transaction) {
-    console.log(transaction)
+
     try {
       if (transaction.status === "success") {
         const newTransaction = {
@@ -25,7 +25,7 @@ class transactionService {
         if (response.data) {
           console.log(`Transaction created sucess. ID:${response.data.ID}`);
         }
-        return response.data;
+
       }
     } catch (error) {
       console.error(error);
