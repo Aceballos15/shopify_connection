@@ -1,4 +1,5 @@
 const axios = require("axios");
+const fulfillmentService = require("./fullfillmentServices")
 
 // Create one class of Order
 class orderService {
@@ -94,7 +95,7 @@ class orderService {
 
 
   // method to cancell an order 
-  async cancelOrder(order, req, res) {
+  async cancelOrder(order) {
     try {
 
       // Validate if exists an order with this order.id
@@ -112,10 +113,18 @@ class orderService {
         // Patch request and response log 
         const updateOrder = await axios.patch(updateOrderUrl, new_data);
         if(updateOrder.data !== null ){
+
           console.log(`Order Canceled succesfully. Order id: ${JSON.stringify(updateOrder.data)}`)
 
+          if(order.fulfillments.length > 0){
+
+            // Call the fulfillment order cancellation 
+            const fulfillment = order.fulfillments
+            const newCancelService = new fulfillmentService()
+            newCancelService.cancelFullfillmentAnOrder(fulfillment)
 
 
+          }
         } 
 
 

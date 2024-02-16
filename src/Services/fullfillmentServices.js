@@ -7,11 +7,39 @@ class fullfilService {
   // Assign a new order fulfilment, wen the user generated invoice in zoho
   async assignFullfilmentAnOrder(order, fullfilInformation) {}
 
-  // Moddify the order fulfillment for a transportation service
-  async updateFullfilmentAnOrder(order, fullfilInformation) {}
 
   // Cancel the order fulfillment
-  async cancelFullfillmentAnOrder(order) {}
+  async cancelFullfillmentAnOrder(fullfill) {
+
+    // url to cancel an order fulfillments 
+    const urlToFulfillmentsCanel = `https://tiendaxhobbies.myshopify.com/admin/api/2024-01/fulfillments/${fullfill[0].id}/canel.json`
+
+    try {
+      
+      // Json for headers petition
+      const config = {
+        headers: {
+          "X-Shopify-Access-Token": process.env.ACCESS_TOKEN,
+        },
+      };
+
+      // POST request to cancell 
+      const response = await axios.post(urlToFulfillmentsCanel, config); 
+      if(response.data.fulfillment.status == "cancelled"){
+        console.log("¡Fulfillment canceled succesfully!")
+      }else{
+        console.log("Error to cancel fulfillment")
+      }
+
+    } catch (error) {
+      
+      console.error(error)
+
+    }
+
+
+  }
+
 
   // add information to transport information
   async updateTrackingInformation(fulfillment_id, transportInformation) {
@@ -46,3 +74,7 @@ class fullfilService {
     }
   }
 }
+
+
+
+module.exports = fullfilService; 
