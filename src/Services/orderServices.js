@@ -114,12 +114,7 @@ class orderService {
         if(updateOrder.data !== null ){
           console.log(`Order Canceled succesfully. Order id: ${JSON.stringify(updateOrder.data)}`)
 
-
-
         } 
-
-
-
       }
       
     } catch (error) {  
