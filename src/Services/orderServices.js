@@ -14,6 +14,10 @@ class orderService {
         // Create an array for product detail list
         const products = [];
 
+        // Find products in zoho database 
+        const urlToconsultProduct = "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/shopifyProducts"; 
+        const allProducts = await axios.get(urlToconsultProduct); 
+
         // for each item
         order.line_items.forEach((product_line) => {
           // If product is taxed, calculate the VAT
@@ -24,6 +28,13 @@ class orderService {
                 parseFloat(product_line.price) / 1.19) *
               parseInt(product_line.quantity);
           }
+
+          console.log(allProducts.data)
+
+          // Find object in zoho array returns 
+          const object_product = allProducts.find((object) => object.numberShopify === 7672208883883)
+          console.log(object_product)
+
 
           // product map for detail
           const product_detail = {
@@ -41,6 +52,7 @@ class orderService {
         const new_order = {
           dateOrder: order.created_at.substring(10, -1),
           clientOrder: idClient,
+          adressShipping: `${order.shipping_address.address1}, ${order.shipping_address.city}, ${order.shipping_address.province}`, 
           orderId: order.id.toString(),
           orderName: order.name, 
           statusOrder: "Creada",
@@ -61,6 +73,7 @@ class orderService {
         );
         return response;
       } else {
+        console.log("Order exists")
         return {
           status: "Order created before....",
         };
@@ -116,12 +129,10 @@ class orderService {
 
           console.log(`Order Canceled succesfully. Order id: ${JSON.stringify(updateOrder.data)}`)
           if(order.fulfillments.length > 0){
-
             // Call the fulfillment order cancellation 
             const fulfillment = order.fulfillments
             const newCancelService = new fulfillmentService()
             newCancelService.cancelFullfillmentAnOrder(fulfillment)
-
           }
         } 
       }

@@ -4,13 +4,8 @@ const axios = require("axios");
 class fullfilService {
   constructor() {}
 
-  // Assign a new order fulfilment, wen the user generated invoice in zoho
-  async assignFullfilmentAnOrder(order, fullfilInformation) {}
-
-  
   // Cancel the order fulfillment
   async cancelFullfillmentAnOrder(fullfill) {
-
     // url to cancel an order fulfillments 
     const urlToFulfillmentsCanel = `https://tiendaxhobbies.myshopify.com/admin/api/2024-01/fulfillments/${fullfill[0].id}/canel.json`
 
@@ -30,7 +25,6 @@ class fullfilService {
       }else{
         console.log("Error to cancel fulfillment")
       }
-
     } catch (error) {
       
       console.error(error)
@@ -39,7 +33,6 @@ class fullfilService {
 
 
   }
-
 
   // add information to transport information
   async updateTrackingInformation(transportInformation, order) {

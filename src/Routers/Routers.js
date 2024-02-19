@@ -18,6 +18,7 @@ router.post("/create_order", async (req, res) => {
     const clientDocument = customerData.default_address.company;
     // Create an id client in blank variable
     var idClient = "";
+    
     // Url to fin client in zoho databse "Clientes_Report"
     const urlClient = `https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Clientes_Report?where=Documento%3D%3D%22${clientDocument}%22`;
     const findClient = await axios.get(urlClient);
@@ -139,6 +140,11 @@ router.post("/transaction_creation", async (req, res) => {
 });
 
 
-router.post("/update_tracking", )
+router.post("/update_tracking", async (req, res) => {
+  const data = req.body; 
+
+  
+
+})
 
 module.exports = router;
