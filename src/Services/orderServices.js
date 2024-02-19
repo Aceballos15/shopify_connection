@@ -115,9 +115,6 @@ class orderService {
         if(updateOrder.data !== null ){
 
           console.log(`Order Canceled succesfully. Order id: ${JSON.stringify(updateOrder.data)}`)
-
-<<<<<<< HEAD
-=======
           if(order.fulfillments.length > 0){
 
             // Call the fulfillment order cancellation 
@@ -125,9 +122,7 @@ class orderService {
             const newCancelService = new fulfillmentService()
             newCancelService.cancelFullfillmentAnOrder(fulfillment)
 
-
           }
->>>>>>> 7098c544737a43bb3f3e73ded0a0befdc6769b7e
         } 
       }
       

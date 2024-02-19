@@ -4,13 +4,10 @@ const axios = require("axios");
 class fullfilService {
   constructor() {}
 
-<<<<<<< HEAD
-=======
   // Assign a new order fulfilment, wen the user generated invoice in zoho
   async assignFullfilmentAnOrder(order, fullfilInformation) {}
 
-
->>>>>>> 7098c544737a43bb3f3e73ded0a0befdc6769b7e
+  
   // Cancel the order fulfillment
   async cancelFullfillmentAnOrder(fullfill) {
 
