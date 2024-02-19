@@ -55,11 +55,12 @@ router.post("/cancel_order", async (req, res) => {
     const orderCancellation = new orderService();
     await orderCancellation.cancelOrder(req.body);
 
-    res.send(orderCancellation)
+    res.send({"Status": "Order cancelled received"})
     
   } catch (error) {
     console.error(error);
   }
+
 });
 
 //router to create all products 
@@ -138,5 +139,6 @@ router.post("/transaction_creation", async (req, res) => {
 });
 
 
+router.post("/update_tracking", )
 
 module.exports = router;
