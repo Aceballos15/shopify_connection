@@ -70,6 +70,7 @@ class fullfilService {
       console.error(error);
     }
   }
+  
 }
 
 

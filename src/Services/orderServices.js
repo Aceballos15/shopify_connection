@@ -1,5 +1,6 @@
 const axios = require("axios");
 const fulfillmentService = require("./fullfillmentServices")
+const productService = require('./productServices')
 
 // Create one class of Order
 class orderService {
@@ -19,7 +20,7 @@ class orderService {
         const allProducts = await axios.get(urlToconsultProduct); 
 
         // for each item
-        order.line_items.forEach((product_line) => {
+        order.line_items.forEach(async (product_line) => {
           // If product is taxed, calculate the VAT
           var iva_detalle = 0;
           if (product_line.taxable === true) {
@@ -29,16 +30,27 @@ class orderService {
               parseInt(product_line.quantity);
           }
 
-          console.log(allProducts.data)
-
           // Find object in zoho array returns 
-          const object_product = allProducts.find((object) => object.numberShopify === 7672208883883)
-          console.log(object_product)
+          const object_product = allProducts.data.find((object) => object.numberShopify == String(product_line.product_id))
+          
+          var id_product = ""; 
+          if (object_product !== null && object_product !== undefined) {
 
+            id_product = object_product.ID;
+
+          }else
+          {
+            // if doesn´t exists product in zoho database, create a new product (Call product service)
+            console.log("New product Creating...")
+            const newServiceproduct = new productService()
+            id_product = await newServiceproduct.createProduct(product_line.product_id); 
+
+          }
 
           // product map for detail
           const product_detail = {
             Producto: product_line.title,
+            productDetail: id_product, 
             Precio: parseFloat(product_line.price),
             Cantidad: parseInt(product_line.quantity),
             IVA: parseInt(iva_detalle),
@@ -73,15 +85,17 @@ class orderService {
         );
         return response;
       } else {
-        console.log("Order exists")
+        console.log("Order exists in zoho database...")
         return {
           status: "Order created before....",
         };
       }
+      
     } catch (error) {
       console.log(error);
     }
   }
+
 
   // method to validate if order exists in zoho database 
   async validateOrder(idOrder) {
