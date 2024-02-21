@@ -65,6 +65,10 @@ class fullfilService {
     // Try to make a request
     try {
       const response = axios.post(UrlToAssign, send_json, config);
+      if(response.data.status == 200)
+      {
+        console.log("Update Travking information success")
+      }
     } catch (error) {
       // log error
       console.error(error);

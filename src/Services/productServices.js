@@ -18,9 +18,9 @@ class productService {
 
         // Search product in shopify account 
         const product_response = await axios.get(urlConsultProduct, config);
- 
-        try {
+        const product_detail = product_response.data.product; 
 
+        try {
             // New product object 
             const new_product = {
                 Nicho: "XHO",
@@ -28,25 +28,25 @@ class productService {
                 Tipo: "1889220000084502235",
                 Categoria: "1889220000124756734",
                 Marca: "1889220000014561383",
-                Referencia: product_response.product.title,
-                textBody: product_response.body_html,
-                Precio_detal: parseFloat(product_response.product.variants[0].price),
+                Referencia: product_detail.title,
+                textBody: product_detail.body_html,
+                Precio_detal: parseFloat(product_detail.variants[0].price),
                 PrecioComparacion:
-                  parseFloat(product_response.product.variants[0].compare_at_price) ?? 0 ,
+                  parseFloat(product_detail.variants[0].compare_at_price) ?? 0 ,
                 Precio_Mayorista: 0,
                 Precio_Aliado: 0,
-                pesoProducto: parseInt(product_response.product.variants[0].weight) ?? 0,
+                pesoProducto: parseInt(product_detail.variants[0].weight) ?? 0,
                 Estado: "Activo",
-                numberShopify: product_response.product.id,
-                idShopify: `{"product_id": ${product_response.product.id}, "variant_id": ${product_response.product.variants[0].id}}`,
-                CodigoTecnosuper: product_response.product.id,
+                numberShopify: product_detail.id,
+                idShopify: `{"product_id": ${product_detail.id}, "variant_id": ${product_detail.variants[0].id}}`,
+                CodigoTecnosuper: product_detail.id,
               };
 
-              urlToCreateProducts = "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Productos"
+              const urlToCreateProducts = "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Productos"
               const insertProduct = await axios.post(urlToCreateProducts,
                   new_product
               );
-  
+                
               return insertProduct.data.ID
             
         } catch (error) {

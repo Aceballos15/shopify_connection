@@ -8,6 +8,8 @@ const clientService = require("../Services/clientServices");
 const orderService = require("../Services/orderServices");
 // instance of transaction object
 const transactionService = require("../Services/transactionService");
+// Instance of fulfillment service
+const fullfilService = require("../Services/fullfillmentServices");
 
 //Principal router to received the webhook
 router.post("/create_order", async (req, res) => {
@@ -18,7 +20,7 @@ router.post("/create_order", async (req, res) => {
     const clientDocument = customerData.default_address.company;
     // Create an id client in blank variable
     var idClient = "";
-    
+
     // Url to fin client in zoho databse "Clientes_Report"
     const urlClient = `https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Clientes_Report?where=Documento%3D%3D%22${clientDocument}%22`;
     const findClient = await axios.get(urlClient);
@@ -56,80 +58,19 @@ router.post("/cancel_order", async (req, res) => {
     const orderCancellation = new orderService();
     await orderCancellation.cancelOrder(req.body);
 
-    res.send({"Status": "Order cancelled received"})
-    
+    res.send({ Status: "Order cancelled received" });
   } catch (error) {
     console.error(error);
   }
-
+  res.status(200).send("Cancel Order Received")
 });
 
-//router to create all products 
+//router to create all products
 router.post("/create_products", async (req, res) => {
-  const urlProduct =
-    "https://tiendaxhobbies.myshopify.com/admin/api/2024-01/products.json?limit=250&&status=active";
-  const config = {
-    headers: {
-      "X-Shopify-Access-Token": process.env.SECRET_KEY,
-    },
-  };
-
-  const response = await axios.get(urlProduct, config);
-
-  const allProducts = response.data.products;
-
-  console.log(allProducts.length);
-
-  allProducts.forEach(async (product_response) => {
-    var statusProduct = "";
-    if (product_response.status === "active") {
-      statusProduct = "Activo";
-    } else {
-      statusProduct = "Inactivo";
-    }
-
-    const images = [];
-    product_response.images.forEach((image) => {
-      const new_Image = {
-        linkUrl: image.src,
-      };
-
-      images.push(new_Image);
-    });
-
-    const new_product = {
-      Nicho: "XHO",
-      GrupoDeProductos: "1889220000051935384",
-      Tipo: "1889220000084502235",
-      Categoria: "1889220000124756734",
-      Marca: "1889220000014561383",
-      Referencia: product_response.title.toLowerCase(),
-      textBody: product_response.body_html,
-      Precio_detal: parseFloat(product_response.variants[0].price),
-      PrecioComparacion:
-        parseFloat(product_response.variants[0].compare_at_price) || 0,
-      Precio_Mayorista: 0,
-      Precio_Aliado: 0,
-      pesoProducto: parseInt(product_response.variants[0].weight) || 0,
-      Estado: statusProduct,
-      numberShopify: product_response.id,
-      idShopify: `{"product_id": ${product_response.id}, "variant_id": ${product_response.variants[0].id}}`,
-      Imagenes: images,
-      CodigoTecnosuper: product_response.id,
-    };
-
-    const insertProduct = await axios.post(
-      "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Productos",
-      new_product
-    );
-
-    console.log(insertProduct.data);
-  });
-
   res.status(200).send("Creado correctamente");
 });
 
-//router to create a new transaction 
+//router to create a new transaction
 router.post("/transaction_creation", async (req, res) => {
   try {
     const newTransaction = new transactionService();
@@ -137,14 +78,38 @@ router.post("/transaction_creation", async (req, res) => {
   } catch (error) {
     console.error(error);
   }
+  res.status(200).send("Transaction received");
+});
+
+router.post("/update_tracking", async (req, res) => {
+  const data = req.body;
+  // Config shopify request parameters
+  const urlConsultProduct = `https://tiendaxhobbies.myshopify.com/admin/api/2024-01/orders/${data.idOrder}.json`;
+  const config = {
+    headers: {
+      "X-Shopify-Access-Token": process.env.SECRET_KEY,
+    },
+  };
+
+  // Search product in shopify account
+  const orderResponse = await axios.get(urlConsultProduct, config);
+
+  // Call a method of a fulfillment service 
+  const newFulfillment = new fullfilService();
+  await newFulfillment.updateTrackingInformation(
+    data.trackingInformation,
+    orderResponse.data.order
+  );
+
+  res.status(200).send("Tracking Received")
 });
 
 
-router.post("/update_tracking", async (req, res) => {
-  const data = req.body; 
+router.post("/reject_order", async(req, res) => {
+  const newCancelOrder = new orderService(); 
+  await newCancelOrder.declineOrder(req.body)
 
-  
-
+  res.send(200).res("Reject order received")
 })
 
 module.exports = router;
