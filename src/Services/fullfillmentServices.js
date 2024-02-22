@@ -35,7 +35,7 @@ class fullfilService {
   }
 
   // add information to transport information
-  async updateTrackingInformation(transportInformation, order) {
+  async updateTrackingInformation(transportInformation, orderId) {
     
     // Json for headers petition
     const config = {
@@ -49,7 +49,7 @@ class fullfilService {
       fullfillment: {
         line_items_by_fulfillment_order:[
           {
-            fulfillment_order_id: order.id,
+            fulfillment_order_id: orderId,
           }
         ], 
         tracking_info: {

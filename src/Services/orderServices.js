@@ -60,11 +60,22 @@ class orderService {
           products.push(product_detail);
         }
 
+        const adressDetail = `{
+          "name": ${order.shipping_address.first_name}, 
+          "lastName": ${order.shipping_address.last_name},
+          "adress": ${order.shipping_address.address1}, 
+          "phone": ${order.shipping_address.phone}, 
+          "docNumber": ${order.shipping_address.company}, 
+          "email": ${order.customer.email}, 
+          "zip": ${order.shipping_address.zip}, 
+          "municipality": ${order.shipping_address.city.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}, 
+          "department": ${order.shipping_address.province.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}
+        }`
         // build the new order collection
         const new_order = {
           dateOrder: order.created_at.substring(10, -1),
           clientOrder: idClient,
-          adressShipping: `${order.shipping_address.address1}, ${order.shipping_address.city}, ${order.shipping_address.province}`,
+          shipingAddressDetail: adressDetail,
           orderId: order.id.toString(),
           orderName: order.name,
           statusOrder: "Creada",
@@ -207,9 +218,20 @@ class orderService {
         products.push(product_detail);
       }
 
+      const adressDetail = `{
+          "name": ${order.shipping_address.first_name}, 
+          "lastName": ${order.shipping_address.last_name}, 
+          "adress": ${order.shipping_address.address1}, 
+          "phone": ${order.shipping_address.phone}, 
+          "docNumber": ${order.shipping_address.company}, 
+          "email": ${order.customer.email}, 
+          "zip": ${order.shipping_address.zip}, 
+          "municipality": ${order.shipping_address.city.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}, 
+          "department": ${order.shipping_address.province.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}
+        }`
       // build the new order collection
       const update_order = {
-        adressShipping: `${order.shipping_address.address1}, ${order.shipping_address.city}, ${order.shipping_address.province}`,
+        shipingAddressDetail: adressDetail,
         statusOrder: "Creada",
         totalOrder: parseFloat(order.current_subtotal_price),
         shippingOrder: parseFloat(order.shipping_lines[0].price),
