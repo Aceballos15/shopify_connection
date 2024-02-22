@@ -1,5 +1,9 @@
 const axios = require("axios");
-const { response } = require("express");
+
+// Require an instance of fulfillment service 
+const fulfillmentService = require("./fullfillmentServices");
+const fullfilService = require("./fullfillmentServices");
+
 
 class billingService {
   constructor() {}
@@ -87,7 +91,17 @@ class billingService {
       if (responseBilling.status == 200 && responseBilling.data != null ) {
         console.log(
           `Billing Created successfully... ${responseBilling.data.ID}`
-        );
+        );  
+        // if transport information is "Propia", update tracking information for this order 
+            if (tracking_detail.Transportadora === "Propia") {
+                const trackingInformation = {
+                    company: tracking_detail.transportName, 
+                    guia_number: tracking_detail.guideNumber, 
+                }
+                // Call a new fulfillment service and update tracking information 
+                const newFullfilmentTracking = new fullfilService(); 
+                await newFullfilmentTracking.updateTrackingInformation(trackingInformation, billing_detail.orderId);
+            }
       }else{
         console.log("Invoice not generating!!!")
       }

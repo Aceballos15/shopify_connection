@@ -44,6 +44,7 @@ class fullfilService {
       },
     };
 
+    // COnst Json to update tracking information and configuration information 
     const send_json = {
       fullfillment: {
         line_items_by_fulfillment_order:[
@@ -67,7 +68,7 @@ class fullfilService {
       const response = axios.post(UrlToAssign, send_json, config);
       if(response.data.status == 200)
       {
-        console.log("Update Travking information success")
+        console.log("Update Tracking information success")
       }
     } catch (error) {
       // log error
@@ -76,7 +77,5 @@ class fullfilService {
   }
   
 }
-
-
 
 module.exports = fullfilService; 
