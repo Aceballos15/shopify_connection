@@ -10,6 +10,8 @@ const orderService = require("../Services/orderServices");
 const transactionService = require("../Services/transactionService");
 // Instance of fulfillment service
 const fullfilService = require("../Services/fullfillmentServices");
+// Instance of a Billing service 
+const billingService = require("../Services/billing_services")
 
 //Principal router to received the webhook
 router.post("/create_order", async (req, res) => {
@@ -62,7 +64,7 @@ router.post("/cancel_order", async (req, res) => {
   } catch (error) {
     console.error(error);
   }
-  res.status(200).send("Cancel Order Received")
+
 });
 
 //router to create all products
@@ -109,7 +111,22 @@ router.post("/reject_order", async(req, res) => {
   const newCancelOrder = new orderService(); 
   await newCancelOrder.declineOrder(req.body)
 
-  res.send(200).res("Reject order received")
+  res.status(200).send("Reject order received")
+})
+
+
+router.post("/create_billing", async(req, res) => {
+
+  try {
+    
+    const billing = new billingService();
+    await billing.create_billing(req.body.id_order, req.body.id_despacho); 
+
+    res.status(200).send("Order billing received successfully"); 
+  } catch (error) {
+    console.error(error)
+    res.status(501).send("Server error")
+  }
 })
 
 module.exports = router;
