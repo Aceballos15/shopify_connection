@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { json } = require("express");
 
 const BASE_URI_ZOHO = process.env.ZOHO_URL;
 
@@ -18,13 +19,14 @@ class transactionService {
           paymentIDTransaction: transaction.payment_id,
         };
 
-        console.log(`Transaction in process...${newTransaction}`);
+        const transactionSend  = JSON.stringify(newTransaction)
+        console.log("Transaction in process...");
 
         const urlTransactionCreation =
           `${BASE_URI_ZOHO}/shopifyTransactions`;
         const response = await axios.post(
           urlTransactionCreation,
-          newTransaction
+          transactionSend
         );
 
         if (response.data) {
