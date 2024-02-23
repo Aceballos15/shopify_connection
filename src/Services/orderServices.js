@@ -11,7 +11,9 @@ const productService = require("./productServices");
 
 // instance of client service
 const clientService = require("../Services/clientServices");
-const { find } = require("async");
+// Intance os transactor service 
+const transactionService = require("../Services/transactorServices");
+
 
 // Create one class of Order
 class orderService {
@@ -135,6 +137,23 @@ class orderService {
         console.log(
           `Order created succesfully.....ID orden: ${response.data.ID}`
         );
+
+        const config = {
+          headers: {
+            "X-Shopify-Access-Token": process.env.ACCESS_TOKEN,
+          },
+        };
+
+        // if exists transactions for order, update transactions 
+        const findTransactions = `${BASE_URI_SHOPIFY}/${V_SHOPIFY}/orders/${order.id}/transactions.json`;
+        const responseTransactions = await axios.get(findTransactions, config);
+
+        if (responseTransactions.data.transactions.length > 0) {
+          for (let transaction = 0; transaction < responseTransactions.data.transactions.length; transaction++) {
+            const element = responseTransactions.data.transactions[transaction];
+            await new transactionService().createTransaction(element); 
+          }
+        }
 
         return response;
       } else {
@@ -315,6 +334,24 @@ class orderService {
 
       if (responseUpdate.status == 200) {
         console.log(`Order Updated Success: ${responseUpdate.data.ID}`);
+
+        const config = {
+          headers: {
+            "X-Shopify-Access-Token": process.env.ACCESS_TOKEN,
+          },
+        };
+        
+        // if exists transactions for order, update transactions 
+        const findTransactions = `${BASE_URI_SHOPIFY}/${V_SHOPIFY}/orders/${order.id}/transactions.json`;
+        const responseTransactions = await axios.get(findTransactions, config);
+
+        if (responseTransactions.data.transactions.length > 0) {
+          
+          for (let transaction = 0; transaction < responseTransactions.data.transactions.length; transaction++) {
+            const element = responseTransactions.data.transactions[transaction];
+            await new transactionService().createTransaction(element); 
+          }
+        }
       }
     } catch (error) {
       console.error(error);

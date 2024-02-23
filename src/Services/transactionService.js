@@ -10,7 +10,22 @@ class transactionService {
   async createTransaction(transaction) {
 
     try {
-      if (transaction.status === "success" || transaction.gateway.includes("contraentrega")) {
+
+      // Validate if transaction existis in zoho database 
+      var validate = true; 
+      urlToFindTransactions = `${BASE_URI_ZOHO}/shopifyTransactionsReport`; 
+      const response = await axios.get(urlToFindTransactions);
+
+      const object_Transaction = response.data.find(
+        (transaction) => transaction.idTransaction == String(transaction.id)
+      );
+
+      if(object_Transaction != null && object_Transaction != undefined) {
+        validate = false;
+        console.log("Transaction exists in zoho database"); 
+      }
+
+      if (transaction.status === "success" || transaction.gateway.includes("contraentrega") && validate === true) {
         const newTransaction = {
           idTransaction: transaction.id,
           orderIdTransaction: transaction.order_id,
