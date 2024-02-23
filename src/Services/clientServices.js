@@ -1,7 +1,6 @@
 const axios = require("axios");
-const { response } = require("express");
-urlCreateClient =
-  "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Clientes";
+
+const BASE_URI_ZOHO = process.env.ZOHO_URL;
 
 class clientService {
   constructor() {}
@@ -44,8 +43,7 @@ class clientService {
     // Try- catch => Errors
     try {
       // Call the API to create a client
-      const createClient = await axios.post(
-        "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Clientes",
+      const createClient = await axios.post(`${BASE_URI_ZOHO}/Clientes`,
         newClient
       );
       // return ID of creation
@@ -69,7 +67,7 @@ class clientService {
       var departmentToFind = department.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
       departmentToFind = departmentToFind.toLowerCase(); 
 
-      const urlMunicipality = `https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Municipio1?where=Municipio.contains("${municipalityToFind}")%26%26Departamento.contains("${departmentToFind}")`;
+      const urlMunicipality = `${BASE_URI_ZOHO}/Municipio1?where=Municipio.contains("${municipalityToFind}")%26%26Departamento.contains("${departmentToFind}")`;
       const response = await axios.get(urlMunicipality);
 
       // if response isn't null

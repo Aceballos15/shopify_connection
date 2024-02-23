@@ -1,5 +1,7 @@
 const axios = require("axios");
 
+const BASE_URI_ZOHO = process.env.ZOHO_URL;
+
 class transactionService {
   constructor() {}
 
@@ -16,7 +18,7 @@ class transactionService {
           paymentIDTransaction: transaction.payment_id,
         };
         const urlTransactionCreation =
-          "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/shopifyTransactions";
+          `${BASE_URI_ZOHO}/shopifyTransactions`;
         const response = await axios.post(
           urlTransactionCreation,
           newTransaction

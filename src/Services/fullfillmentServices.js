@@ -1,5 +1,7 @@
 const axios = require("axios");
 
+const BASE_URI_SHOPIFY = process.env.SHOPIFY_URL; 
+
 // new class for a new fullfill function
 class fullfilService {
   constructor() {}
@@ -7,7 +9,7 @@ class fullfilService {
   // Cancel the order fulfillment
   async cancelFullfillmentAnOrder(fullfill) {
     // url to cancel an order fulfillments 
-    const urlToFulfillmentsCanel = `https://tiendaxhobbies.myshopify.com/admin/api/2024-01/fulfillments/${fullfill[0].id}/canel.json`
+    const urlToFulfillmentsCanel = `${BASE_URI_SHOPIFY}/${process.env.SHOPIFY_VERSION}/fulfillments/${fullfill[0].id}/canel.json`
 
     try {
       
@@ -59,7 +61,7 @@ class fullfilService {
     }
 
     // url to request
-    const UrlToAssign = `https://tiendaxhobbies.myshopify.com/admin/api/2024-01/fulfillments.json`;
+    const UrlToAssign = `${BASE_URI_SHOPIFY}/${process.env.SHOPIFY_VERSION}/fulfillments.json`;
 
     // Try to make a request
     try {

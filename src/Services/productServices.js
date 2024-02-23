@@ -1,5 +1,8 @@
 const axios = require("axios")
 
+const V_SHOPIFY = process.env.SHOPIFY_VERSION
+const BASE_URI_ZOHO = process.env.ZOHO_URL;
+const BASE_URI_SHOPIFY = process.env.SHOPIFY_URL;
 
 class productService {
 
@@ -8,7 +11,7 @@ class productService {
     // Method to create a product 
     async createProduct(idProduct){
         // Config shopify request parameters 
-        const urlConsultProduct = `https://tiendaxhobbies.myshopify.com/admin/api/2024-01/products/${idProduct}.json`; 
+        const urlConsultProduct = `${BASE_URI_SHOPIFY}/${V_SHOPIFY}/products/${idProduct}.json`; 
         const config = {
             headers: {
               "X-Shopify-Access-Token": process.env.SECRET_KEY,
@@ -41,7 +44,7 @@ class productService {
                 CodigoTecnosuper: product_detail.id,
               };
 
-              const urlToCreateProducts = "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Productos"
+              const urlToCreateProducts = `${BASE_URI_ZOHO}/Productos`; 
               const insertProduct = await axios.post(urlToCreateProducts,
                   new_product
               );

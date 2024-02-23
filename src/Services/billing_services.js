@@ -1,10 +1,11 @@
 const axios = require("axios");
 
 // Require an instance of fulfillment service 
-const fulfillmentService = require("./fullfillmentServices");
 const fullfilService = require("./fullfillmentServices");
 
+const BASE_URI_ZOHO = process.env.ZOHO_URL;
 
+// Class to invoice services and zoho validations 
 class billingService {
   constructor() {}
 
@@ -14,13 +15,11 @@ class billingService {
         console.log("Generating a new billing...")
 
       // Consult order details in zoho database
-      const urlToZohoOrder =
-        "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/";
       const zoho_order = await axios.get(
-        `${urlToZohoOrder}/ordersShopify?where=ID%3D%3D${id_order}`
+        `${BASE_URI_ZOHO}/ordersShopify?where=ID%3D%3D${id_order}`
       );
       const despacho = await axios.get(
-        `${urlToZohoOrder}/Despachos_Xhobbies_Report?where=ID%3D%3D${id_despacho}`
+        `${BASE_URI_ZOHO}/Despachos_Xhobbies_Report?where=ID%3D%3D${id_despacho}`
       );
      
       // Create a new Billing Order
@@ -28,7 +27,7 @@ class billingService {
       const tracking_detail = despacho.data[0];
 
       const detailOrder = await axios.get(
-        `${urlToZohoOrder}/shopifyDetail?where=ordenID%3D%3D${billing_detail.ID}`
+        `${BASE_URI_ZOHO}/shopifyDetail?where=ordenID%3D%3D${billing_detail.ID}`
       );
 
       const products = [];
@@ -67,7 +66,7 @@ class billingService {
 
       // Create a new dictionary with Billing Values
       const billing = {
-        Fecha: "2024-02-22",
+        Fecha: new Date().toISOString().slice(0, 10),
         Cliente: billing_detail.clientOrder.ID != null ? billing_detail.clientOrder.ID : "1889220000014774504",
         tipoCliente: "Detal",
         Tipo_Factura: "Contado",
@@ -102,9 +101,7 @@ class billingService {
       };
 
       // Config and send post To create Billing
-      const urlToCreateBilling =
-        "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Remision";
-      const responseBilling = await axios.post(urlToCreateBilling, billing);
+      const responseBilling = await axios.post(`${BASE_URI_ZOHO}/Remision`, billing);
 
       if (responseBilling.status == 200 && responseBilling.data != null ) {
         console.log(

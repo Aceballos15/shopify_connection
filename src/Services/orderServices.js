@@ -1,24 +1,71 @@
 const axios = require("axios");
+
+const V_SHOPIFY = process.env.SHOPIFY_VERSION
+const BASE_URI_ZOHO = process.env.ZOHO_URL;
+const BASE_URI_SHOPIFY = process.env.SHOPIFY_URL;
+
+
+// Create an instance of fulfillment and product services
 const fulfillmentService = require("./fullfillmentServices");
 const productService = require("./productServices");
+
+// instance of client service
+const clientService = require("../Services/clientServices");
 
 // Create one class of Order
 class orderService {
   constructor() {}
 
   // Method to create a new order in zoho database
-  async createOrder(order, idClient) {
+  async createOrder(order) {
     try {
       const validateOrderExists = await this.validateOrder(order.id);
       if (!validateOrderExists.status) {
+        // Define customer map
+        const customerData = order.customer;
+        const clientDocument =
+          customerData.default_address.company != null
+            ? customerData.default_address.company
+            : order.shipping_address.comnpany;
+        // Create an id client in blank variable
+        var idClient = "";
+
+        // Url to fin client in zoho databse "Clientes_Report"
+        const urlClient = `${BASE_URI_ZOHO}/Clientes_Report?where=Documento%3D%3D%22${clientDocument}%22`;
+        const findClient = await axios.get(urlClient);
+
+        var validate = false;
+
+        // Try catch to validate Client
+        try {
+          JSON.parse(validateClient);
+          validate = true;
+        } catch (error) {
+          validate = false;
+        }
+
+        // if the API petition found one client or more, capture this ID
+        if (validate === true) {
+          idClient = findClient.data[0].ID;
+        } else {
+          // create client if no exists
+          const newClient = new clientService();
+          idClient = await newClient.createClient(
+            customerData,
+            clientDocument
+          );
+
+          if (idClient != null) {
+            console.log(`Client created succesfully...ID cliente: ${idClient}`);
+          }
+        }
+
         console.log("Order not found. Creating....");
         // Create an array for product detail list
         const products = [];
 
         // Find products in zoho database
-        const urlToconsultProduct =
-          "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/shopifyProducts";
-        const allProducts = await axios.get(urlToconsultProduct);
+        const allProducts = await axios.get(`${BASE_URI_ZOHO}/shopifyProducts`);
 
         // for each item
         for (let index = 0; index < order.line_items.length; index++) {
@@ -68,9 +115,13 @@ class orderService {
           "docNumber": ${order.shipping_address.company}, 
           "email": ${order.customer.email}, 
           "zip": ${order.shipping_address.zip}, 
-          "municipality": ${order.shipping_address.city.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}, 
-          "department": ${order.shipping_address.province.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}
-        }`
+          "municipality": ${order.shipping_address.city
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")}, 
+          "department": ${order.shipping_address.province
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")}
+        }`;
         // build the new order collection
         const new_order = {
           dateOrder: order.created_at.substring(10, -1),
@@ -88,23 +139,19 @@ class orderService {
         };
 
         // Url for post conect with zoho creator and petition function
-        const urlCreateOrder =
-          "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/ordersShopifyCreate";
+        const urlCreateOrder =`${BASE_URI_ZOHO}/ordersShopifyCreate`;
         const response = await axios.post(urlCreateOrder, new_order);
         console.log(
           `Order created succesfully.....ID orden: ${response.data.ID}`
         );
         return response;
       } else {
-
-        // Found one order or more, try to update order 
+        // Found one order or more, try to update order
         console.log(`Updating Order: ${order.name}`);
-        this.updateOrder(validateOrderExists.idOrder, order)
-
+        this.updateOrder(validateOrderExists.idOrder, order);
         return {
           status: "Order created before....",
         };
-
       }
     } catch (error) {
       console.log(error);
@@ -115,7 +162,7 @@ class orderService {
   async validateOrder(idOrder) {
     try {
       // Validate if order exists in zoho database
-      const urlOrder = `https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/ordersShopify?where=orderId%3D%3D%22${idOrder}%22`;
+      const urlOrder = `${BASE_URI_ZOHO}/ordersShopify?where=orderId%3D%3D%22${idOrder}%22`;
       const findOrder = await axios.get(urlOrder);
       // if order found one element or more, return true validate
       if (findOrder.data.length > 0) {
@@ -143,7 +190,7 @@ class orderService {
         console.log("Order canceled doesn't exist in zoho database");
       } else {
         // Url and new data to update this order
-        const updateOrderUrl = `https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/ordersShopify/${validateOrderExists.idOrder}`;
+        const updateOrderUrl = `${BASE_URI_ZOHO}/ordersShopify/${validateOrderExists.idOrder}`;
         const new_data = {
           statusOrder: "Cancelada",
         };
@@ -169,13 +216,13 @@ class orderService {
     }
   }
 
-  // Method to Update an order in zoho database 
+  // Method to Update an order in zoho database
   async updateOrder(id_order, order) {
     try {
       const products = [];
       // Find products in zoho database
       const urlToconsultProduct =
-      "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/shopifyProducts";
+        `${BASE_URI_ZOHO}/shopifyProducts`;
       const allProducts = await axios.get(urlToconsultProduct);
 
       // for each item
@@ -226,9 +273,13 @@ class orderService {
           "docNumber": ${order.shipping_address.company}, 
           "email": ${order.customer.email}, 
           "zip": ${order.shipping_address.zip}, 
-          "municipality": ${order.shipping_address.city.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}, 
-          "department": ${order.shipping_address.province.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}
-        }`
+          "municipality": ${order.shipping_address.city
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")}, 
+          "department": ${order.shipping_address.province
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")}
+        }`;
       // build the new order collection
       const update_order = {
         shipingAddressDetail: adressDetail,
@@ -239,38 +290,35 @@ class orderService {
         detallePedido: products,
       };
 
-      const urlToPatchOrder = `https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/ordersShopify/${id_order}`; 
-      const responseUpdate = await axios.patch(urlToPatchOrder, update_order); 
+      const urlToPatchOrder = `${BASE_URI_ZOHO}/ordersShopify/${id_order}`;
+      const responseUpdate = await axios.patch(urlToPatchOrder, update_order);
 
       if (responseUpdate.status == 200) {
-        console.log(`Order Updated Success: ${responseUpdate.data.ID}`)
+        console.log(`Order Updated Success: ${responseUpdate.data.ID}`);
       }
-
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
-  // Method to Decline or reject order 
-  async declineOrder(rejectDetail){
-    // Config shopify request parameters 
-    const urlToCancelOrder = `https://tiendaxhobbies.myshopify.com/admin/api/2024-01/orders/${rejectDetail.orderID}/cancel.json`
+  // Method to Decline or reject order
+  async declineOrder(rejectDetail) {
+    // Config shopify request parameters
+    const urlToCancelOrder = `${BASE_URI_SHOPIFY}/${V_SHOPIFY}/orders/${rejectDetail.orderID}/cancel.json`;
     const config = {
-        headers: {
-          "X-Shopify-Access-Token": process.env.SECRET_KEY,
-        },
+      headers: {
+        "X-Shopify-Access-Token": process.env.SECRET_KEY,
+      },
     };
 
     const postData = {
-      reason : rejectDetail.reason
-    }
-    const cancelOrder = await axios.post(urlToCancelOrder, postData, config); 
+      reason: rejectDetail.reason,
+    };
+    const cancelOrder = await axios.post(urlToCancelOrder, postData, config);
     if (cancelOrder.status == 200) {
-      console.log("Order Reject success..."); 
+      console.log("Order Reject success...");
     }
-
   }
-
 }
 
 module.exports = orderService;
