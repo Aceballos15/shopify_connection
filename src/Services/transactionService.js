@@ -9,7 +9,7 @@ class transactionService {
   async createTransaction(transaction) {
 
     try {
-      if (transaction.status === "success") {
+      if (transaction.status === "success" || transaction.gateway.includes("contraentrega")) {
         const newTransaction = {
           idTransaction: transaction.id,
           orderIdTransaction: transaction.order_id,
@@ -17,6 +17,9 @@ class transactionService {
           paymentMethodTransaction: transaction.gateway,
           paymentIDTransaction: transaction.payment_id,
         };
+
+        console.log(`Transaction in process...${newTransaction}`);
+
         const urlTransactionCreation =
           `${BASE_URI_ZOHO}/shopifyTransactions`;
         const response = await axios.post(
