@@ -26,7 +26,7 @@ const queue = async.queue(async (orderData) => {
 }, 1);
 
 //Principal router to received the webhook
-router.post("/create_order", validateHandler, async(req, res) => {
+router.post("/create_order", async(req, res) => {
   try {
     // Call to queue function, to generate a row in memory
     const dataProcesing = {
@@ -46,7 +46,7 @@ router.post("/create_order", validateHandler, async(req, res) => {
 });
 
 // router to cancell an order
-router.post("/cancel_order", validateHandler, async (req, res) => {
+router.post("/cancel_order", async (req, res) => {
   try {
     const orderCancellation = new orderService();
     await orderCancellation.cancelOrder(req.body);
@@ -58,7 +58,7 @@ router.post("/cancel_order", validateHandler, async (req, res) => {
 });
 
 //router to create all products
-router.post("/create_products", validateHandler, async (req, res) => {
+router.post("/create_products", async (req, res) => {
   try {
 
     const newProduct = new productService()
@@ -73,7 +73,7 @@ router.post("/create_products", validateHandler, async (req, res) => {
 });
 
 //router to create a new transaction
-router.post("/transaction_creation", validateHandler, async (req, res) => {
+router.post("/transaction_creation", async (req, res) => {
   try {
     const newTransaction = new transactionService();
     await newTransaction.createTransaction(req.body);
