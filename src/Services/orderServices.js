@@ -89,10 +89,10 @@ class orderService {
           const product_detail = {
             Producto: product_line.title,
             productDetail: id_product,
-            Precio: parseFloat(product_line.price),
+            Precio: parseFloat(Math.floor(product_line.price)),
             Cantidad: parseInt(product_line.quantity),
             IVA: parseInt(iva_detalle),
-            Total: parseFloat(product_line.price) * product_line.quantity,
+            Total: parseFloat(Math.floor(product_line.price)) * product_line.quantity,
           };
 
           products.push(product_detail);
@@ -123,13 +123,11 @@ class orderService {
           statusOrder: "Creada",
           paymentValidate: "Pendiente",
           payStatusOrder: order.financial_status,
-          totalOrder: parseFloat(order.current_subtotal_price),
-          shippingOrder: parseFloat(order.shipping_lines[0].price),
-          paymentOrderValue: parseFloat(order.total_price),
+          totalOrder: parseFloat(Math.floor(order.current_subtotal_price)),
+          shippingOrder: parseFloat(Math.floor(order.shipping_lines[0].price)),
+          paymentOrderValue: parseFloat(Math.floor(order.total_price)),
           detallePedido: products,
         };
-
-        console.log(new_order); 
 
         // Url for post conect with zoho creator and petition function
         const urlCreateOrder =`${BASE_URI_ZOHO}/ordersShopifyCreate`;
@@ -137,6 +135,7 @@ class orderService {
         console.log(
           `Order created succesfully.....ID orden: ${response.data.ID}`
         );
+
         return response;
       } else {
         // Found one order or more, try to update order
@@ -305,9 +304,9 @@ class orderService {
         shipingAddressDetail: adressDetail,
         clientOrder: idClient, 
         statusOrder: "Creada",
-        totalOrder: parseFloat(order.current_subtotal_price),
-        shippingOrder: parseFloat(order.shipping_lines[0].price),
-        paymentOrderValue: parseFloat(order.total_price),
+        totalOrder: parseFloat(Math.floor(order.current_subtotal_price)),
+        shippingOrder: parseFloat(Math.floor(order.shipping_lines[0].price)),
+        paymentOrderValue: parseFloat(Math.floor(order.total_price)),
         detallePedido: products,
       };
 
