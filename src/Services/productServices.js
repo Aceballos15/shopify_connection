@@ -7,7 +7,6 @@ class productService {
 
     // Method to create a product 
     async createProduct(idProduct){
-
         // Config shopify request parameters 
         const urlConsultProduct = `https://tiendaxhobbies.myshopify.com/admin/api/2024-01/products/${idProduct}.json`; 
         const config = {

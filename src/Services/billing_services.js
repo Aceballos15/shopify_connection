@@ -46,17 +46,33 @@ class billingService {
             Cargo_por_venta: 0,
             Asesor: "1889220000137104120",
           };
-          totalIva += item.IVA;
+          totalIva += parseFloat(item.IVA);
           products.push(product);
+      }
+
+      const packings = []
+      // Validatew if "Paquetes" field is not empty 
+      if (tracking_detail.Paquetes.length > 0) {
+        // Create an array with all packings 
+        for (let packing = 0; packing < tracking_detail.Paquetes.length; packing++) {
+          const element = tracking_detail.Paquetes[packing];
+          const new_pack = {
+            Tipo_de_empaque: element.Tipo_de_empaque.ID, 
+            Peso_kg: element.Peso_kg, 
+            Unidades: element.Unidades
+          }
+          packings.push(new_pack)
+        }
       }
 
       // Create a new dictionary with Billing Values
       const billing = {
-        Fecha: "2024-02-20",
-        Cliente: billing_detail.clientOrder.ID ?? "1889220000014774504",
+        Fecha: "2024-02-22",
+        Cliente: billing_detail.clientOrder.ID != null ? billing_detail.clientOrder.ID : "1889220000014774504",
         tipoCliente: "Detal",
         Tipo_Factura: "Contado",
         Financieras: "1889220000132747937",
+        Marketplace: "1889220000137194583", 
         Redes2: "No",
         Zona: "1889220000135235205",
         Aseso: "1889220000137104120",
@@ -73,7 +89,7 @@ class billingService {
         tipo_merca: "Mercancía",
         Vendedor: "1889220000125851460",
         Item: products,
-        Observacion: `Venta Shopify. Order ${billing_detail.orderName}`,
+        Observacion: `Venta Shopify. Order ${billing_detail.orderName}. ASEGURADO CON SEGUROS BOLIVAR`,
         Subtotal: parseFloat(
           billing_detail.paymentOrderValue - billing_detail.shippingOrder - totalIva
         ),
@@ -81,8 +97,10 @@ class billingService {
         Iva_Total: parseFloat(totalIva),
         Valor_Declarado: parseFloat(tracking_detail.Valor_Declarado),
         orderShopify: billing_detail.orderId,
-        Paquetes: tracking_detail.Paquetes,
+        Paquetes: packings,
+        shipingAddressDetail: billing_detail.shipingAddressDetail
       };
+
       // Config and send post To create Billing
       const urlToCreateBilling =
         "https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Remision";

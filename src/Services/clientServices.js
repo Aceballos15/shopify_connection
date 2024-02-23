@@ -7,22 +7,23 @@ class clientService {
   constructor() {}
 
   // Method to create client
-  async createClient(clientData) {
+  async createClient(clientData, documentClient) {
     // find the municipality and department of client
     const idMunicipality = await this.getMunicipality(
       clientData.default_address.city,
       clientData.default_address.province
     );
 
+    console.log("Creating a new client")
     // create the object with the client information
     const newClient = {
       Tipo1: "cc",
-      Documento: clientData.default_address.company,
+      Documento: clientData.default_address.company ?? documentClient,
       Retenedor: "No",
       Regimen: "persona natural - regimen simplificado",
       Nombre: clientData.first_name,
       Primer_Apellido: clientData.last_name,
-      Celular: clientData.default_address.phone,
+      Celular: clientData.default_address.phone.replace("+57", ""),
       Correo: clientData.email,
       Fecha_de_Nacimiento: "2000-01-01",
       Municipio: idMunicipality,
@@ -59,7 +60,16 @@ class clientService {
     try {
       // define the API url and the call
       var idMunicipality = "";
-      const urlMunicipality = `https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Municipio1?where=Municipio.contains("${municipality}")%26%26Departamento.contains("${department}")`;
+
+      // Regex to convert text in lower case for municipality to find 
+      var municipalityToFind = municipality.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      municipalityToFind = municipalityToFind.toLowerCase()
+
+      // // Regex to convert text in lower case for department to find 
+      var departmentToFind = department.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      departmentToFind = departmentToFind.toLowerCase(); 
+
+      const urlMunicipality = `https://nexyapp-f3a65a020e2a.herokuapp.com/zoho/v1/console/Municipio1?where=Municipio.contains("${municipalityToFind}")%26%26Departamento.contains("${departmentToFind}")`;
       const response = await axios.get(urlMunicipality);
 
       // if response isn't null
