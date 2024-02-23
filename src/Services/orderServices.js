@@ -348,10 +348,12 @@ class orderService {
         if (responseTransactions.data.transactions.length > 0) {
 
           console.log(`Search transactions`); 
+
           for (let transaction = 0; transaction < responseTransactions.data.transactions.length; transaction++) {
             const element = responseTransactions.data.transactions[transaction];
             await new transactionService().createTransaction(element); 
           }
+          
         }
       }
     } catch (error) {
