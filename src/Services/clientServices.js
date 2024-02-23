@@ -40,6 +40,7 @@ class clientService {
       Zona: "1889220000135235205",
     };
 
+    console.log(newClient)
     // Try- catch => Errors
     try {
       // Call the API to create a client

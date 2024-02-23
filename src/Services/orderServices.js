@@ -11,6 +11,7 @@ const productService = require("./productServices");
 
 // instance of client service
 const clientService = require("../Services/clientServices");
+const { find } = require("async");
 
 // Create one class of Order
 class orderService {
@@ -34,18 +35,8 @@ class orderService {
         const urlClient = `${BASE_URI_ZOHO}/Clientes_Report?where=Documento%3D%3D%22${clientDocument}%22`;
         const findClient = await axios.get(urlClient);
 
-        var validate = false;
-
-        // Try catch to validate Client
-        try {
-          JSON.parse(validateClient);
-          validate = true;
-        } catch (error) {
-          validate = false;
-        }
-
         // if the API petition found one client or more, capture this ID
-        if (validate === true) {
+        if (findClient.data.length > 0 ) {
           idClient = findClient.data[0].ID;
         } else {
           // create client if no exists
@@ -108,19 +99,19 @@ class orderService {
         }
 
         const adressDetail = `{
-          "name": ${order.shipping_address.first_name}, 
-          "lastName": ${order.shipping_address.last_name},
-          "adress": ${order.shipping_address.address1}, 
-          "phone": ${order.shipping_address.phone}, 
-          "docNumber": ${order.shipping_address.company}, 
-          "email": ${order.customer.email}, 
-          "zip": ${order.shipping_address.zip}, 
-          "municipality": ${order.shipping_address.city
+          "name": "${order.shipping_address.first_name}", 
+          "lastName": "${order.shipping_address.last_name}",
+          "adress": "${order.shipping_address.address1}", 
+          "phone": "${order.shipping_address.phone}", 
+          "docNumber": "${order.shipping_address.company}", 
+          "email": "${order.customer.email}", 
+          "zip": "${order.shipping_address.zip}", 
+          "municipality": "${order.shipping_address.city
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")}, 
-          "department": ${order.shipping_address.province
+            .replace(/[\u0300-\u036f]/g, "")}", 
+          "department": "${order.shipping_address.province
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")}
+            .replace(/[\u0300-\u036f]/g, "")}"
         }`;
         // build the new order collection
         const new_order = {
@@ -219,6 +210,33 @@ class orderService {
   // Method to Update an order in zoho database
   async updateOrder(id_order, order) {
     try {
+      const customerData = order.customer;
+        const clientDocument =
+          customerData.default_address.company != null
+            ? customerData.default_address.company
+            : order.shipping_address.comnpany;
+        // Create an id client in blank variable
+        var idClient = "";
+
+        // Url to fin client in zoho databse "Clientes_Report"
+        const urlClient = `${BASE_URI_ZOHO}/Clientes_Report?where=Documento%3D%3D%22${clientDocument}%22`;
+        const findClient = await axios.get(urlClient);
+
+        // if the API petition found one client or more, capture this ID
+        if (findClient.data.length > 0 ) {
+          idClient = findClient.data[0].ID;
+        } else {
+          // create client if no exists
+          const newClient = new clientService();
+          idClient = await newClient.createClient(
+            customerData,
+            clientDocument
+          );
+          if (idClient != null) {
+            console.log(`Client created succesfully...ID cliente: ${idClient}`);
+          }
+        }
+
       const products = [];
       // Find products in zoho database
       const urlToconsultProduct =
@@ -265,24 +283,25 @@ class orderService {
         products.push(product_detail);
       }
 
-      const adressDetail = `{
-          "name": ${order.shipping_address.first_name}, 
-          "lastName": ${order.shipping_address.last_name}, 
-          "adress": ${order.shipping_address.address1}, 
-          "phone": ${order.shipping_address.phone}, 
-          "docNumber": ${order.shipping_address.company}, 
-          "email": ${order.customer.email}, 
-          "zip": ${order.shipping_address.zip}, 
-          "municipality": ${order.shipping_address.city
+        const adressDetail = `{
+          "name": "${order.shipping_address.first_name}", 
+          "lastName": "${order.shipping_address.last_name}",
+          "adress": "${order.shipping_address.address1}", 
+          "phone": "${order.shipping_address.phone}", 
+          "docNumber": "${order.shipping_address.company}", 
+          "email": "${order.customer.email}", 
+          "zip": "${order.shipping_address.zip}", 
+          "municipality": "${order.shipping_address.city
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")}, 
-          "department": ${order.shipping_address.province
+            .replace(/[\u0300-\u036f]/g, "")}", 
+          "department": "${order.shipping_address.province
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")}
+            .replace(/[\u0300-\u036f]/g, "")}"
         }`;
       // build the new order collection
       const update_order = {
         shipingAddressDetail: adressDetail,
+        clientOrder: idClient, 
         statusOrder: "Creada",
         totalOrder: parseFloat(order.current_subtotal_price),
         shippingOrder: parseFloat(order.shipping_lines[0].price),
