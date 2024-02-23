@@ -12,7 +12,7 @@ const productService = require("./productServices");
 // instance of client service
 const clientService = require("../Services/clientServices");
 // Intance os transactor service 
-const transactionService = require("../Services/transactorServices");
+const transactionService = require("../Services/transactionService");
 
 
 // Create one class of Order
@@ -340,7 +340,7 @@ class orderService {
             "X-Shopify-Access-Token": process.env.ACCESS_TOKEN,
           },
         };
-        
+
         // if exists transactions for order, update transactions 
         const findTransactions = `${BASE_URI_SHOPIFY}/${V_SHOPIFY}/orders/${order.id}/transactions.json`;
         const responseTransactions = await axios.get(findTransactions, config);
