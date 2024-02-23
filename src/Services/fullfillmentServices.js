@@ -30,8 +30,6 @@ class fullfilService {
       console.error(error)
 
     }
-
-
   }
 
   // add information to transport information
