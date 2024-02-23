@@ -41,7 +41,6 @@ class productService {
                 Estado: "Activo",
                 numberShopify: product_detail.id,
                 idShopify: `{"product_id": ${product_detail.id}, "variant_id": ${product_detail.variants[0].id}}`,
-                CodigoTecnosuper: product_detail.id,
               };
 
               const urlToCreateProducts = `${BASE_URI_ZOHO}/Productos`; 
