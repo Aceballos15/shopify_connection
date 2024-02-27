@@ -14,7 +14,7 @@ class productService {
         const urlConsultProduct = `${BASE_URI_SHOPIFY}/${V_SHOPIFY}/products/${idProduct}.json`; 
         const config = {
             headers: {
-              "X-Shopify-Access-Token": process.env.SECRET_KEY,
+              "X-Shopify-Access-Token": process.env.ACCESS_TOKEN,
             },
         };
 
