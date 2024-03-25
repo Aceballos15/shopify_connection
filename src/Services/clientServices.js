@@ -17,7 +17,7 @@ class clientService {
     // create the object with the client information
     const newClient = {
       Tipo1: "cc",
-      Documento: clientData.default_address.company ?? documentClient,
+      Documento: clientData.default_address.company != null ? clientData.default_address.company : documentClient,
       Retenedor: "No",
       Regimen: "persona natural - regimen simplificado",
       Nombre: clientData.first_name,

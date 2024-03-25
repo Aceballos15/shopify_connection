@@ -10,7 +10,6 @@ class transactionService {
   async createTransaction(transaction) {
 
     try {
-
       // Validate if transaction existis in zoho database 
       var validate = true; 
       urlToFindTransactions = `${BASE_URI_ZOHO}/shopifyTransactionsReport`; 
