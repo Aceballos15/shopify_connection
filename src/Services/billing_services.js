@@ -85,7 +85,7 @@ class billingService {
         Rete_Ica: 0,
         Envio: parseFloat(billing_detail.shippingOrder),
         Transportadora: tracking_detail.Transportadora,
-        tipo_merca: "Mercancía",
+        tipo_merca: tracking_detail.Tipo_merca,
         Vendedor: "1889220000125851460",
         Item: products,
         Observacion: `Venta Shopify. Order ${billing_detail.orderName}. ASEGURADO CON SEGUROS BOLIVAR`,
