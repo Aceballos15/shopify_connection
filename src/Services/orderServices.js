@@ -119,6 +119,7 @@ class orderService {
         const new_order = {
           dateOrder: order.created_at.substring(10, -1),
           clientOrder: idClient,
+          Tipo: "Orden", 
           shipingAddressDetail: adressDetail,
           orderId: order.id.toString(),
           orderName: order.name,
