@@ -12,7 +12,7 @@ const productService = require("./productServices");
 const clientService = require("../Services/clientServices");
 
 // Obtener la fecha de ayer y formatearla
-const fechaAyer = moment().subtract(2, "days").format("YYYY-MM-DDTHH:mm:ssZZ");
+const fechaAyer = moment().subtract(1, "days").format("YYYY-MM-DDTHH:mm:ssZZ");
 
 // Function to get all abandoned checkouts since yesterday
 const createAbandonecCheckouts = async () => {

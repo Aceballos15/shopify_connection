@@ -2,7 +2,7 @@ const { Router } = require("express");
 const router = Router();
 const async = require("async");
 
-const validateHandler = require("../middlewares/validationHanddler")
+const validateHandler = require("../middlewares/validationHanddler");
 
 // instance of order service
 const orderService = require("../Services/orderServices");
@@ -12,8 +12,11 @@ const transactionService = require("../Services/transactionService");
 const fullfilService = require("../Services/fullfillmentServices");
 // Instance of a Billing service
 const billingService = require("../Services/billing_services");
-// Instance os a product service 
-const productService = require("../Services/productServices"); 
+// Instance os a product service
+const productService = require("../Services/productServices");
+
+// service of ultima milla service
+const guideService = require("../Services/ultimaMillaService");
 
 // Function to encole order
 const queue = async.queue(async (orderData) => {
@@ -26,7 +29,7 @@ const queue = async.queue(async (orderData) => {
 }, 1);
 
 //Principal router to received the webhook
-router.post("/create_order", async(req, res) => {
+router.post("/create_order", async (req, res) => {
   try {
     // Call to queue function, to generate a row in memory
     const dataProcesing = {
@@ -37,7 +40,6 @@ router.post("/create_order", async(req, res) => {
     queue.push(dataProcesing);
 
     res.status(200).send("Received order");
-    
   } catch (error) {
     // error log and response status code 500
     console.error("Error en la solicitud a Zoho:", error);
@@ -60,15 +62,13 @@ router.post("/cancel_order", async (req, res) => {
 //router to create all products
 router.post("/create_products", async (req, res) => {
   try {
-
-    const newProduct = new productService()
-    await newProduct.createProduct(req.body.id); 
+    const newProduct = new productService();
+    await newProduct.createProduct(req.body.id);
 
     res.status(200).send("Creado correctamente");
-
   } catch (error) {
     console.error(error);
-    res.status(500).send("Not response ")
+    res.status(500).send("Not response ");
   }
 });
 
@@ -83,7 +83,7 @@ router.post("/transaction_creation", async (req, res) => {
   res.status(200).send("Transaction received");
 });
 
-// Router to update a tracking information for order since zoho database 
+// Router to update a tracking information for order since zoho database
 router.post("/update_tracking", async (req, res) => {
   const data = req.body;
 
@@ -97,8 +97,7 @@ router.post("/update_tracking", async (req, res) => {
   res.status(200).send("Tracking Received");
 });
 
-
-// Router to cancel an order since zoho database 
+// Router to cancel an order since zoho database
 router.post("/reject_order", async (req, res) => {
   const newCancelOrder = new orderService();
   await newCancelOrder.declineOrder(req.body);
@@ -106,7 +105,7 @@ router.post("/reject_order", async (req, res) => {
   res.status(200).send("Reject order received");
 });
 
-// Router to create an invoice in zoho database 
+// Router to create an invoice in zoho database
 router.post("/create_billing", async (req, res) => {
   try {
     const billing = new billingService();
@@ -116,6 +115,38 @@ router.post("/create_billing", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(501).send("Server error");
+  }
+});
+
+router.post("/create_milla_guide", async (req, res) => {
+  try {
+    const newGuide = new guideService();
+    const createGuide = await newGuide.createOrder(req.body);
+    const data_response = {};
+
+    if (createGuide.code != null) {
+      const newSticker = await newGuide.createSticker(createGuide.order);
+
+      data_response = {
+        code: createGuide.code,
+        rotulo: newSticker.rotulo,
+      };
+    }
+
+    res.status(200).send(data_response);
+  } catch (error) {
+    res.status(500).send("Server error");
+  }
+});
+
+router.delete("/cancel_order_milla", async (req, res) => {
+  try {
+    const newGuide = new guideService();
+    await newGuide.cancelOrder(req.body.code);
+
+    res.status(200).send("Ultima Milla canceled received");
+  } catch (error) {
+    res.status(500).send("Server error");
   }
 });
 
