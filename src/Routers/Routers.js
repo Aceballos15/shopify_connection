@@ -120,12 +120,13 @@ router.post("/create_billing", async (req, res) => {
 
 router.post("/create_milla_guide", async (req, res) => {
   try {
+    data_response = req.body;
     const newGuide = new guideService();
     const createGuide = await newGuide.createOrder(req.body);
-    const data_response = {};
+    var data_response = {};
 
     if (createGuide.code != null) {
-      const newSticker = await newGuide.createSticker(createGuide.order);
+      const newSticker = await newGuide.createSticker(createGuide.code);
 
       data_response = {
         code: createGuide.code,
@@ -135,7 +136,7 @@ router.post("/create_milla_guide", async (req, res) => {
 
     res.status(200).send(data_response);
   } catch (error) {
-    res.status(500).send("Server error");
+    res.status(500).send(error.message);
   }
 });
 

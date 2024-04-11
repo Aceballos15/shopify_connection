@@ -20,7 +20,7 @@ class transportClass {
         orderData,
         config
       );
-
+      var codeTransport = null; 
       if (responseCreate.data) {
         codeTransport = responseCreate.data.data.reference;
       }
