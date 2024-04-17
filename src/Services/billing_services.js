@@ -107,6 +107,7 @@ class billingService {
         console.log(
           `Billing Created successfully... ${responseBilling.data.ID}`
         );  
+
         // if transport information is "Propia", update tracking information for this order 
             if (tracking_detail.Transportadora === "Propia") {
                 const trackingInformation = {
@@ -117,6 +118,7 @@ class billingService {
                 const newFullfilmentTracking = new fullfilService(); 
                 await newFullfilmentTracking.updateTrackingInformation(trackingInformation, billing_detail.orderId);
             }
+            
       }else{
         console.log("Invoice not generating!!!")
       }

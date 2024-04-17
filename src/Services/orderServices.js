@@ -27,9 +27,9 @@ class orderService {
         // Define customer map
         const customerData = order.customer;
         const clientDocument =
-          customerData.default_address.company != null
-            ? customerData.default_address.company
-            : order.shipping_address.comnpany;
+          customerData.shipping_address.company != null
+            ? customerData.shipping_address.company
+            : order.default_address.comnpany;
         // Create an id client in blank variable
         var idClient = "";
 
@@ -74,8 +74,13 @@ class orderService {
 
           // Find object in zoho array returns
           const object_product = allProducts.data.find(
-            (object) => object.numberShopify == String(product_line.product_id)
+
+            (object) => {
+              return object.numberShopify == String(product_line.product_id) && object.idShopify.includes(product_line.variant_id)
+            } 
+
           );
+
           var id_product = "";
           if (object_product !== null && object_product !== undefined) {
             id_product = object_product.ID;
@@ -233,9 +238,9 @@ class orderService {
     try {
       const customerData = order.customer;
         const clientDocument =
-          customerData.default_address.company != null
-            ? customerData.default_address.company
-            : order.shipping_address.comnpany;
+          customerData.shipping_address.company != null
+            ? customerData.shipping_address.company
+            : order.default_address.comnpany;
         // Create an id client in blank variable
         var idClient = "";
 
@@ -278,8 +283,13 @@ class orderService {
 
         // Find object in zoho array returns
         const object_product = allProducts.data.find(
-          (object) => object.numberShopify == String(product_line.product_id)
+
+          (object) => {
+            return object.numberShopify == String(product_line.product_id) && object.idShopify.includes(product_line.variant_id)
+          } 
+
         );
+        
         var id_product = "";
         if (object_product !== null && object_product !== undefined) {
           id_product = object_product.ID;
