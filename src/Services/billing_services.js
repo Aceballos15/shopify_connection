@@ -100,6 +100,8 @@ class billingService {
         shipingAddressDetail: billing_detail.shipingAddressDetail
       };
 
+      console.log(billing_detail); 
+      
       // Config and send post To create Billing
       const responseBilling = await axios.post(`${BASE_URI_ZOHO}/Remision`, billing);
 
