@@ -27,9 +27,7 @@ class fullfilService {
         console.log("Error to cancel fulfillment")
       }
     } catch (error) {
-      
       console.error(error)
-
     }
   }
 
