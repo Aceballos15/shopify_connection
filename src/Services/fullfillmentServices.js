@@ -12,7 +12,6 @@ class fullfilService {
     const urlToFulfillmentsCanel = `${BASE_URI_SHOPIFY}/${process.env.SHOPIFY_VERSION}/fulfillments/${fullfill[0].id}/canel.json`
 
     try {
-      
       // Json for headers petition
       const config = {
         headers: {
