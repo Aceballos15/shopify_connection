@@ -238,9 +238,9 @@ class orderService {
     try {
       const customerData = order.customer;
         const clientDocument =
-          customerData.shipping_address.company != null
-            ? customerData.shipping_address.company
-            : order.default_address.comnpany;
+          customerData.default_address.company != null
+            ? customerData.default_address.company
+            : order.shipping_address.comnpany;
         // Create an id client in blank variable
         var idClient = "";
 
