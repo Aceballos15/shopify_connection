@@ -22,8 +22,9 @@ const guideService = require("../Services/ultimaMillaService");
 const queue = async.queue(async (orderData) => {
   console.log("Procesing order in que...");
   // instance an object of class order => Use create an order method
+
   const newOrderClass = new orderService();
-  const responseCreate = await newOrderClass.createOrder(orderData.order);
+  const responseCreate = await newOrderClass.createOrder(JSON.parse(orderData.order));
 
   return responseCreate.data;
 }, 1);
