@@ -67,14 +67,6 @@ class orderService {
               parseInt(product_line.quantity);
           }
 
-          // Find object in zoho array returns
-          const object_product = allProducts.data.find((object) => {
-            return (
-              object.numberShopify == String(product_line.product_id) &&
-              object.idShopify.includes(product_line.variant_id)
-            );
-          });
-
           var id_product = null;
 
           const findProductBy_sku = allProducts.find((object) => {
