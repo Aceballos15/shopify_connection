@@ -24,7 +24,7 @@ const queue = async.queue(async (orderData) => {
   // instance an object of class order => Use create an order method
 
   const newOrderClass = new orderService();
-  const responseCreate = await newOrderClass.createOrder(JSON.parse(orderData.order));
+  const responseCreate = await newOrderClass.createOrder(orderData.order);
 
   return responseCreate.data;
 }, 1);
