@@ -69,7 +69,7 @@ class orderService {
 
           var id_product = null;
 
-          const findProductBy_sku = allProducts.find((object) => {
+          const findProductBy_sku = allProducts.data.find((object) => {
             return object.CodigoTecnosuper == String(product_line.sku);
           });
 
@@ -291,7 +291,7 @@ class orderService {
 
         var id_product = null;
 
-        const findProductBy_sku = allProducts.find((object) => {
+        const findProductBy_sku = allProducts.data.find((object) => {
           return object.CodigoTecnosuper == String(product_line.sku);
         });
 
