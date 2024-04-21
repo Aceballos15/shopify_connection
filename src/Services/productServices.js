@@ -26,6 +26,7 @@ class productService {
             // New product object 
             const new_product = {
                 Nicho: "XHO",
+                CodigoTecnosuper: product_detail.variants[0].sku, 
                 GrupoDeProductos: "1889220000051935384",
                 Tipo: "1889220000084502235",
                 Categoria: "1889220000124756734",

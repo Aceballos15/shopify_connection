@@ -1,9 +1,8 @@
 const axios = require("axios");
 
-const V_SHOPIFY = process.env.SHOPIFY_VERSION
+const V_SHOPIFY = process.env.SHOPIFY_VERSION;
 const BASE_URI_ZOHO = process.env.ZOHO_URL;
 const BASE_URI_SHOPIFY = process.env.SHOPIFY_URL;
-
 
 // Create an instance of fulfillment and product services
 const fulfillmentService = require("./fullfillmentServices");
@@ -11,9 +10,8 @@ const productService = require("./productServices");
 
 // instance of client service
 const clientService = require("../Services/clientServices");
-// Intance os transactor service 
+// Intance os transactor service
 const transactionService = require("../Services/transactionService");
-
 
 // Create one class of Order
 class orderService {
@@ -38,15 +36,12 @@ class orderService {
         const findClient = await axios.get(urlClient);
 
         // if the API petition found one client or more, capture this ID
-        if (findClient.data.length > 0 ) {
+        if (findClient.data.length > 0) {
           idClient = findClient.data[0].ID;
         } else {
           // create client if no exists
           const newClient = new clientService();
-          idClient = await newClient.createClient(
-            customerData,
-            clientDocument
-          );
+          idClient = await newClient.createClient(customerData, clientDocument);
 
           if (idClient != null) {
             console.log(`Client created succesfully...ID cliente: ${idClient}`);
@@ -73,23 +68,41 @@ class orderService {
           }
 
           // Find object in zoho array returns
-          const object_product = allProducts.data.find(
-
-            (object) => {
-              return object.numberShopify == String(product_line.product_id) && object.idShopify.includes(product_line.variant_id)
-            } 
-
-          );
-
-          var id_product = "";
-          if (object_product !== null && object_product !== undefined) {
-            id_product = object_product.ID;
-          } else {
-            // if doesn´t exists product in zoho database, create a new product (Call product service)
-            const newServiceproduct = new productService();
-            id_product = await newServiceproduct.createProduct(
-              product_line.product_id
+          const object_product = allProducts.data.find((object) => {
+            return (
+              object.numberShopify == String(product_line.product_id) &&
+              object.idShopify.includes(product_line.variant_id)
             );
+          });
+
+          var id_product = null;
+
+          const findProductBy_sku = allProducts.find((object) => {
+            return object.CodigoTecnosuper == String(product_line.sku);
+          });
+
+          if (findProductBy_sku != null && findProductBy_sku != undefined) {
+            id_product = findProductBy_sku.ID;
+          }
+
+          if (id_product == null) {
+            // Find object in zoho array returns
+            const object_product = allProducts.data.find((object) => {
+              return (
+                object.numberShopify == String(product_line.product_id) &&
+                object.idShopify.includes(product_line.variant_id)
+              );
+            });
+
+            if (object_product !== null && object_product !== undefined) {
+              id_product = object_product.ID;
+            } else {
+              // if doesn´t exists product in zoho database, create a new product (Call product service)
+              const newServiceproduct = new productService();
+              id_product = await newServiceproduct.createProduct(
+                product_line.product_id
+              );
+            }
           }
 
           // product map for detail
@@ -99,7 +112,9 @@ class orderService {
             Precio: parseFloat(Math.floor(product_line.price)),
             Cantidad: parseInt(product_line.quantity),
             IVA: parseInt(iva_detalle),
-            Total: parseFloat(Math.floor(product_line.price)) * product_line.quantity,
+            Total:
+              parseFloat(Math.floor(product_line.price)) *
+              product_line.quantity,
           };
 
           products.push(product_detail);
@@ -124,7 +139,7 @@ class orderService {
         const new_order = {
           dateOrder: order.created_at.substring(10, -1),
           clientOrder: idClient,
-          Tipo: "Orden", 
+          Tipo: "Orden",
           shipingAddressDetail: adressDetail,
           orderId: order.id.toString(),
           orderName: order.name,
@@ -138,7 +153,7 @@ class orderService {
         };
 
         // Url for post conect with zoho creator and petition function
-        const urlCreateOrder =`${BASE_URI_ZOHO}/ordersShopifyCreate`;
+        const urlCreateOrder = `${BASE_URI_ZOHO}/ordersShopifyCreate`;
         const response = await axios.post(urlCreateOrder, new_order);
         console.log(
           `Order created succesfully.....ID orden: ${response.data.ID}`
@@ -150,14 +165,18 @@ class orderService {
           },
         };
 
-        // if exists transactions for order, update transactions 
+        // if exists transactions for order, update transactions
         const findTransactions = `${BASE_URI_SHOPIFY}/${V_SHOPIFY}/orders/${order.id}/transactions.json`;
         const responseTransactions = await axios.get(findTransactions, config);
 
         if (responseTransactions.data.transactions.length > 0) {
-          for (let transaction = 0; transaction < responseTransactions.data.transactions.length; transaction++) {
+          for (
+            let transaction = 0;
+            transaction < responseTransactions.data.transactions.length;
+            transaction++
+          ) {
             const element = responseTransactions.data.transactions[transaction];
-            await new transactionService().createTransaction(element); 
+            await new transactionService().createTransaction(element);
           }
         }
 
@@ -236,39 +255,34 @@ class orderService {
   // Method to Update an order in zoho database
   async updateOrder(id_order, order) {
     try {
-
       const customerData = order.customer;
 
-        const clientDocument =
-          customerData.default_address.company != null
-            ? customerData.default_address.company
-            : order.shipping_address.comnpany;
-        // Create an id client in blank variable
-        var idClient = "";
+      const clientDocument =
+        customerData.default_address.company != null
+          ? customerData.default_address.company
+          : order.shipping_address.comnpany;
+      // Create an id client in blank variable
+      var idClient = "";
 
-        // Url to fin client in zoho databse "Clientes_Report"
-        const urlClient = `${BASE_URI_ZOHO}/Clientes_Report?where=Documento%3D%3D%22${clientDocument}%22`;
-        const findClient = await axios.get(urlClient);
+      // Url to fin client in zoho databse "Clientes_Report"
+      const urlClient = `${BASE_URI_ZOHO}/Clientes_Report?where=Documento%3D%3D%22${clientDocument}%22`;
+      const findClient = await axios.get(urlClient);
 
-        // if the API petition found one client or more, capture this ID
-        if (findClient.data.length > 0 ) {
-          idClient = findClient.data[0].ID;
-        } else {
-          // create client if no exists
-          const newClient = new clientService();
-          idClient = await newClient.createClient(
-            customerData,
-            clientDocument
-          );
-          if (idClient != null) {
-            console.log(`Client created succesfully...ID cliente: ${idClient}`);
-          }
+      // if the API petition found one client or more, capture this ID
+      if (findClient.data.length > 0) {
+        idClient = findClient.data[0].ID;
+      } else {
+        // create client if no exists
+        const newClient = new clientService();
+        idClient = await newClient.createClient(customerData, clientDocument);
+        if (idClient != null) {
+          console.log(`Client created succesfully...ID cliente: ${idClient}`);
         }
+      }
 
       const products = [];
       // Find products in zoho database
-      const urlToconsultProduct =
-        `${BASE_URI_ZOHO}/shopifyProducts`;
+      const urlToconsultProduct = `${BASE_URI_ZOHO}/shopifyProducts`;
       const allProducts = await axios.get(urlToconsultProduct);
 
       // for each item
@@ -283,24 +297,34 @@ class orderService {
             parseInt(product_line.quantity);
         }
 
-        // Find object in zoho array returns
-        const object_product = allProducts.data.find(
+        var id_product = null;
 
-          (object) => {
-            return object.numberShopify == String(product_line.product_id) && object.idShopify.includes(product_line.variant_id)
-          } 
+        const findProductBy_sku = allProducts.find((object) => {
+          return object.CodigoTecnosuper == String(product_line.sku);
+        });
 
-        );
-        
-        var id_product = "";
-        if (object_product !== null && object_product !== undefined) {
-          id_product = object_product.ID;
-        } else {
-          // if doesn´t exists product in zoho database, create a new product (Call product service)
-          const newServiceproduct = new productService();
-          id_product = await newServiceproduct.createProduct(
-            product_line.product_id
-          );
+        if (findProductBy_sku != null && findProductBy_sku != undefined) {
+          id_product = findProductBy_sku.ID;
+        }
+
+        if (id_product == null) {
+          // Find object in zoho array returns
+          const object_product = allProducts.data.find((object) => {
+            return (
+              object.numberShopify == String(product_line.product_id) &&
+              object.idShopify.includes(product_line.variant_id)
+            );
+          });
+
+          if (object_product !== null && object_product !== undefined) {
+            id_product = object_product.ID;
+          } else {
+            // if doesn´t exists product in zoho database, create a new product (Call product service)
+            const newServiceproduct = new productService();
+            id_product = await newServiceproduct.createProduct(
+              product_line.product_id
+            );
+          }
         }
 
         // product map for detail
@@ -316,7 +340,7 @@ class orderService {
         products.push(product_detail);
       }
 
-        const adressDetail = `{
+      const adressDetail = `{
           "name": "${order.shipping_address.first_name}", 
           "lastName": "${order.shipping_address.last_name}",
           "adress": "${order.shipping_address.address1}", 
@@ -334,7 +358,7 @@ class orderService {
       // build the new order collection
       const update_order = {
         shipingAddressDetail: adressDetail,
-        clientOrder: idClient, 
+        clientOrder: idClient,
         statusOrder: "Creada",
         totalOrder: parseFloat(Math.floor(order.current_subtotal_price)),
         shippingOrder: parseFloat(Math.floor(order.shipping_lines[0].price)),
@@ -354,19 +378,21 @@ class orderService {
           },
         };
 
-        // if exists transactions for order, update transactions 
+        // if exists transactions for order, update transactions
         const findTransactions = `${BASE_URI_SHOPIFY}/${V_SHOPIFY}/orders/${order.id}/transactions.json`;
         const responseTransactions = await axios.get(findTransactions, config);
 
         if (responseTransactions.data.transactions.length > 0) {
+          console.log(`Search transactions`);
 
-          console.log(`Search transactions`); 
-
-          for (let transaction = 0; transaction < responseTransactions.data.transactions.length; transaction++) {
+          for (
+            let transaction = 0;
+            transaction < responseTransactions.data.transactions.length;
+            transaction++
+          ) {
             const element = responseTransactions.data.transactions[transaction];
-            await new transactionService().createTransaction(element); 
+            await new transactionService().createTransaction(element);
           }
-          
         }
       }
     } catch (error) {
