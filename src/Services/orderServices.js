@@ -236,7 +236,8 @@ class orderService {
   // Method to Update an order in zoho database
   async updateOrder(id_order, order) {
     try {
-      const customerData = order.customer;
+      const customerData = JSON.parse(order.customer);
+
         const clientDocument =
           customerData.default_address.company != null
             ? customerData.default_address.company
