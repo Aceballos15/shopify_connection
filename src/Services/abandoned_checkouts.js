@@ -190,8 +190,6 @@ const createAbandonecCheckouts = async () => {
   }
 };
 
-
-
 class abandonedOrder {
 
   constructor() {}
