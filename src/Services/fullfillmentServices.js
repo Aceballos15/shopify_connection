@@ -33,17 +33,17 @@ class fullfilService {
 
   // add information to transport information
   async updateTrackingInformation(transportInformation, orderId) {
-    
+     
     // Json for headers petition
     const config = {
       headers: {
-        "X-Shopify-Access-Token": process.env.ACCESS_TOKEN,
+        "X-Shopify-Access-Token": process.env.SECRET_KEY,
       },
     };
 
     // COnst Json to update tracking information and configuration information 
     const send_json = {
-      fullfillment: {
+      fulfillment: {
         line_items_by_fulfillment_order:[
           {
             fulfillment_order_id: orderId,
@@ -57,16 +57,18 @@ class fullfilService {
       }
     }
 
+    console.log(JSON.stringify(send_json));
+
     // url to request
     const UrlToAssign = `${BASE_URI_SHOPIFY}/${process.env.SHOPIFY_VERSION}/fulfillments.json`;
 
     // Try to make a request
     try {
-      const response = axios.post(UrlToAssign, send_json, config);
-      if(response.data.status == 200)
-      {
-        console.log("Update Tracking information success")
-      }
+      // const response = axios.post(UrlToAssign, JSON.stringify(send_json), config);
+      // if(response.data.status == 200)
+      // {
+      //   console.log("Update Tracking information success")
+      // }
     } catch (error) {
       // log error
       console.error(error);

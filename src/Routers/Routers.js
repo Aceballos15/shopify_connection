@@ -18,6 +18,8 @@ const productService = require("../Services/productServices");
 // service of ultima milla service
 const guideService = require("../Services/ultimaMillaService");
 
+const abandonedOrderService = require("../Services/abandoned_checkouts");
+
 // Function to encole order
 const queue = async.queue(async (orderData) => {
   console.log("Procesing order in que...");
@@ -91,7 +93,7 @@ router.post("/update_tracking", async (req, res) => {
   // Call a method of a fulfillment service
   const newFulfillment = new fullfilService();
   await newFulfillment.updateTrackingInformation(
-    data.trackingInformation,
+    JSON.parse(data.trackingInformation),
     data.orderId
   );
 
@@ -151,5 +153,21 @@ router.delete("/cancel_order_milla", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+// Requests abandoned checkouts 
+router.get("/checkouts", async (req, res) => {
+
+  try {
+    
+    new abandonedOrderService().createCheckouts(); 
+
+    res.status(200).send("Carritos creados");
+
+  } catch (error) {
+    res.status(500).send(error.message);
+
+  }
+
+})
 
 module.exports = router;
