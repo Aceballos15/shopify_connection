@@ -20,7 +20,7 @@ const createAbandonecCheckouts = async () => {
   // Json for headers petition
   const config = {
     headers: {
-      "X-Shopify-Access-Token": process.env.SECRET_KEY,
+      "X-Shopify-Access-Token": process.env.ACCESS_TOKEN,
     },
   };
 
