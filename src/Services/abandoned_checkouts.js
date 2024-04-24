@@ -173,8 +173,7 @@ const createAbandonecCheckouts = async () => {
           paymentOrderValue: parseFloat(Math.floor(checkoutElement.total_price)),
           detallePedido: products,
         };
-          
-        console.log(new_order); 
+
           // Url for post conect with zoho creator and petition function
           const urlCreateOrder =`${BASE_URI_ZOHO}/ordersShopifyCreate`;
           const response = await axios.post(urlCreateOrder, new_order);
