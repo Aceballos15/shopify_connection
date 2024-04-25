@@ -40,7 +40,7 @@ class transactionService {
           `${BASE_URI_ZOHO}/shopifyTransactions`;
         const response = await axios.post(
           urlTransactionCreation,
-          transactionSend
+          newTransaction
         );
 
         if (response.data) {
