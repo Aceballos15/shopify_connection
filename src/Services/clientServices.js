@@ -17,12 +17,12 @@ class clientService {
     // create the object with the client information
     const newClient = {
       Tipo1: "cc",
-      Documento: clientData.default_address.company != null ? clientData.default_address.company : documentClient,
+      Documento: documentClient,
       Retenedor: "No",
       Regimen: "persona natural - regimen simplificado",
       Nombre: clientData.first_name,
       Primer_Apellido: clientData.last_name,
-      Celular: clientData.default_address.phone != null ? clientData.default_address.phone.replace("+57", "") : 0,
+      Celular: clientData.default_address.phone != null ? clientData.default_address.phone.replace("+57", "").replace(" ", "") : 0,
       Correo: clientData.email != null ? clientData.email : "notiene@chacam.co",
       Fecha_de_Nacimiento: "2000-01-01",
       Municipio: idMunicipality,
@@ -40,6 +40,8 @@ class clientService {
       Zona: "1889220000135235205",
     };
     
+    console.log(newClient); 
+
     // Try- catch => Errors
     try {
       // Call the API to create a client
