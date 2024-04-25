@@ -25,9 +25,9 @@ class orderService {
         // Define customer map
         const customerData = order.customer;
         const clientDocument =
-          customerData.default_address.company != null
-            ? customerData.default_address.company
-            : order.shipping_address.comnpany;
+          customerData.shipping_address.company != null
+            ? customerData.shipping_address.company
+            : order.default_address.comnpany;
         // Create an id client in blank variable
         var idClient = "";
 
@@ -250,9 +250,9 @@ class orderService {
       const customerData = order.customer;
 
       const clientDocument =
-        customerData.default_address.company != null
-          ? customerData.default_address.company
-          : order.shipping_address.comnpany;
+          customerData.shipping_address.company != null
+            ? customerData.shipping_address.company
+            : order.default_address.comnpany;
       // Create an id client in blank variable
       var idClient = "";
 
