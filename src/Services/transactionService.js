@@ -24,7 +24,7 @@ class transactionService {
         console.log("Transaction exists in zoho database"); 
       }
 
-      if ( ( transaction.status === "success" || transaction.gateway.includes("contraentrega") ) && validate === true) {
+      if ( ( transaction.status === "success" || transaction.gateway.includes("Pago Contraentrega") ) && validate === true) {
         const newTransaction = {
           idTransaction: transaction.id,
           orderIdTransaction: transaction.order_id,
@@ -32,8 +32,6 @@ class transactionService {
           paymentMethodTransaction: transaction.gateway,
           paymentIDTransaction: transaction.payment_id,
         };
-
-        console.log(transaction);
 
         const urlTransactionCreation =
           `${BASE_URI_ZOHO}/shopifyTransactions`;

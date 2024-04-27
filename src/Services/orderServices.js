@@ -384,8 +384,6 @@ class orderService {
             transaction++
           ) {
             const element = responseTransactions.data.transactions[transaction];
-
-            console.log(element);
             await new transactionService().createTransaction(element);
           }
         }
