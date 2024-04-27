@@ -33,7 +33,7 @@ class transactionService {
           paymentIDTransaction: transaction.payment_id,
         };
 
-        console.log(newTransaction);
+        console.log(transaction);
 
         const urlTransactionCreation =
           `${BASE_URI_ZOHO}/shopifyTransactions`;
@@ -42,7 +42,7 @@ class transactionService {
           newTransaction
         );
 
-        console.log(response);
+
         if (response.data) {
           console.log(`Transaction created sucess. ID:${response.data.ID}`);
         }
