@@ -24,7 +24,7 @@ class transactionService {
         console.log("Transaction exists in zoho database"); 
       }
 
-      if (transaction.status === "success" || transaction.gateway.includes("contraentrega") && validate === true) {
+      if ( ( transaction.status === "success" || transaction.gateway.includes("contraentrega") ) && validate === true) {
         const newTransaction = {
           idTransaction: transaction.id,
           orderIdTransaction: transaction.order_id,
@@ -33,8 +33,7 @@ class transactionService {
           paymentIDTransaction: transaction.payment_id,
         };
 
-        const transactionSend  = JSON.stringify(newTransaction)
-        console.log("Transaction in process...");
+        console.log(newTransaction);
 
         const urlTransactionCreation =
           `${BASE_URI_ZOHO}/shopifyTransactions`;
@@ -43,6 +42,7 @@ class transactionService {
           newTransaction
         );
 
+        console.log(response);
         if (response.data) {
           console.log(`Transaction created sucess. ID:${response.data.ID}`);
         }

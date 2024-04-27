@@ -21,8 +21,7 @@ class orderService {
   async createOrder(order) {
     try {
       const validateOrderExists = await this.validateOrder(order.id);
-
-      console.log(validateOrderExists); 
+      
       if (!validateOrderExists.status) {
         // Define customer map
         const customerData = order.customer;
