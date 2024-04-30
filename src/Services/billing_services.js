@@ -73,7 +73,7 @@ class billingService {
         Financieras: "1889220000132747937",
         Marketplace: "1889220000137194583", 
         Redes2: "No",
-        Zona: "1889220000135235205",
+        Zona: tracking_detail.Zona.ID,
         Aseso: "1889220000137104120",
         Bodega: tracking_detail.Bodega.ID,
         Cuenta: "1889220000137104130",

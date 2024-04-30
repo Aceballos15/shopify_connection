@@ -271,6 +271,7 @@ class orderService {
         if (idClient != null) {
           console.log(`Client created succesfully...ID cliente: ${idClient}`);
         }
+        
       }
 
       const products = [];
