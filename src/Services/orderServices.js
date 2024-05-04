@@ -116,7 +116,7 @@ class orderService {
         const adressDetail = `{
           "name": "${order.shipping_address.first_name}", 
           "lastName": "${order.shipping_address.last_name}",
-          "adress": "${order.shipping_address.address1}", 
+          "adress": "${order.shipping_address.address1} - ${order.shipping_address.address2}", 
           "phone": "${order.shipping_address.phone}", 
           "docNumber": "${order.shipping_address.company}", 
           "email": "${order.customer.email}", 
@@ -337,7 +337,7 @@ class orderService {
       const adressDetail = `{
           "name": "${order.shipping_address.first_name}", 
           "lastName": "${order.shipping_address.last_name}",
-          "adress": "${order.shipping_address.address1}", 
+          "adress": "${order.shipping_address.address1} - ${order.shipping_address.address2}", 
           "phone": "${order.shipping_address.phone}", 
           "docNumber": "${order.shipping_address.company}", 
           "email": "${order.customer.email}", 
