@@ -95,7 +95,7 @@ class billingService {
         Total: parseFloat(billing_detail.paymentOrderValue),
         Iva_Total: parseFloat(totalIva),
         Valor_Declarado: parseFloat(tracking_detail.Valor_Declarado),
-        orderShopify: billing_detail.orderId,
+        orderShopify: billing_detail.codeOrder,
         Paquetes: packings,
         shipingAddressDetail: billing_detail.shipingAddressDetail
       };
