@@ -98,7 +98,7 @@ class orderService {
             }
           }
 
-          const priceProduct = parseFloat(Math.floor(product_line.price)) - parseFloat(Math.floor(product_line.total_discount)); 
+          const priceProduct = parseFloat(Math.floor(product_line.price)) - ( parseFloat(Math.floor(product_line.total_discount)) / product_line.quantity );
           // product map for detail
           const product_detail = {
             Producto: product_line.title,
@@ -322,7 +322,7 @@ class orderService {
           }
         }
 
-        const priceProduct = parseFloat(Math.floor(product_line.price)) - parseFloat(Math.floor(product_line.total_discount)); 
+        const priceProduct = parseFloat(Math.floor(product_line.price)) - ( parseFloat(Math.floor(product_line.total_discount)) / product_line.quantity ); 
         // product map for detail
         const product_detail = {
           Producto: product_line.title,
