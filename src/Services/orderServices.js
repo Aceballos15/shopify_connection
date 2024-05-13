@@ -59,15 +59,7 @@ class orderService {
         // for each item
         for (let index = 0; index < order.line_items.length; index++) {
           const product_line = order.line_items[index];
-          // If product is taxed, calculate the VAT
-          var iva_detalle = 0;
-          if (product_line.taxable === true) {
-            iva_detalle =
-              (parseFloat(product_line.price) -
-                parseFloat(product_line.price) / 1.19) *
-              parseInt(product_line.quantity);
-          }
-
+          
           var id_product = null;
 
           const findProductBy_sku = allProducts.data.find((object) => {
@@ -99,6 +91,16 @@ class orderService {
           }
 
           const priceProduct = parseFloat(Math.floor(product_line.price)) - ( parseFloat(Math.floor(product_line.total_discount)) / product_line.quantity );
+
+          // If product is taxed, calculate the VAT
+          var iva_detalle = 0;
+          if (product_line.taxable === true) {
+            iva_detalle =
+              (parseFloat(priceProduct) -
+                parseFloat(priceProduct) / 1.19) *
+              parseInt(product_line.quantity);
+          }
+
           // product map for detail
           const product_detail = {
             Producto: product_line.title,
@@ -283,17 +285,8 @@ class orderService {
       // for each item
       for (let index = 0; index < order.line_items.length; index++) {
         const product_line = order.line_items[index];
-        // If product is taxed, calculate the VAT
-        var iva_detalle = 0;
-        if (product_line.taxable === true) {
-          iva_detalle =
-            (parseFloat(product_line.price) -
-              parseFloat(product_line.price) / 1.19) *
-            parseInt(product_line.quantity);
-        }
-
+        
         var id_product = null;
-
         const findProductBy_sku = allProducts.data.find((object) => {
           return object.CodigoTecnosuper == String(product_line.sku);
         });
@@ -323,6 +316,16 @@ class orderService {
         }
 
         const priceProduct = parseFloat(Math.floor(product_line.price)) - ( parseFloat(Math.floor(product_line.total_discount)) / product_line.quantity ); 
+
+        // If product is taxed, calculate the VAT
+        var iva_detalle = 0;
+        if (product_line.taxable === true) {
+          iva_detalle =
+            (parseFloat(priceProduct) -
+              parseFloat(priceProduct) / 1.19) *
+            parseInt(product_line.quantity);
+        }
+        
         // product map for detail
         const product_detail = {
           Producto: product_line.title,
