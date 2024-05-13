@@ -98,15 +98,16 @@ class orderService {
             }
           }
 
+          const priceProduct = parseFloat(Math.floor(product_line.price)) - parseFloat(Math.floor(product_line.total_discount)); 
           // product map for detail
           const product_detail = {
             Producto: product_line.title,
             productDetail: id_product,
-            Precio: parseFloat(Math.floor(product_line.price)),
+            Precio: parseFloat(priceProduct),
             Cantidad: parseInt(product_line.quantity),
             IVA: parseInt(iva_detalle),
             Total:
-              parseFloat(Math.floor(product_line.price)) *
+              parseFloat(priceProduct) *
               product_line.quantity,
           };
 
@@ -321,14 +322,15 @@ class orderService {
           }
         }
 
+        const priceProduct = parseFloat(Math.floor(product_line.price)) - parseFloat(Math.floor(product_line.total_discount)); 
         // product map for detail
         const product_detail = {
           Producto: product_line.title,
           productDetail: id_product,
-          Precio: parseFloat(product_line.price),
+          Precio: parseFloat(priceProduct),
           Cantidad: parseInt(product_line.quantity),
           IVA: parseInt(iva_detalle),
-          Total: parseFloat(product_line.price) * product_line.quantity,
+          Total: parseFloat(priceProduct) * product_line.quantity,
         };
 
         products.push(product_detail);
