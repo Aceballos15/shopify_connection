@@ -107,7 +107,7 @@ class billingService {
 
       if (responseBilling.status == 200 && responseBilling.data != null ) {
         console.log(
-          `Billing Created successfully... ${responseBilling.data.ID}`
+          `Billing Created successfully... ${responseBilling.data.data.ID}`
         );  
 
         // if transport information is "Propia", update tracking information for this order 
