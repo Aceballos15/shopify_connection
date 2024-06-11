@@ -23,8 +23,8 @@ class billingService {
       );
      
       // Create a new Billing Order
-      const billing_detail = zoho_order.data[0];
-      const tracking_detail = despacho.data[0];
+      const billing_detail = zoho_order.data.data[0];
+      const tracking_detail = despacho.data.data[0];
 
       const detailOrder = await axios.get(
         `${BASE_URI_ZOHO}/shopifyDetail?where=ordenID%3D%3D${billing_detail.ID}`
