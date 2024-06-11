@@ -26,7 +26,8 @@ class billingService {
       const billing_detail = zoho_order.data.data[0];
       const tracking_detail = despacho.data.data[0];
 
-      console.log(billing_detail.data.data)
+      console.log(billing_detail.data);
+      console.log(billing_detail.data);
       const detailOrder = await axios.get(
         `${BASE_URI_ZOHO}/shopifyDetail?where=ordenID==${billing_detail.ID}`
       );
