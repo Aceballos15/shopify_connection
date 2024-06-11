@@ -16,10 +16,10 @@ class billingService {
 
       // Consult order details in zoho database
       const zoho_order = await axios.get(
-        `${BASE_URI_ZOHO}/ordersShopify?where=ID%3D%3D${id_order}`
+        `${BASE_URI_ZOHO}/ordersShopify?where=ID==${id_order}`
       );
       const despacho = await axios.get(
-        `${BASE_URI_ZOHO}/Despachos_Xhobbies_Report?where=ID%3D%3D${id_despacho}`
+        `${BASE_URI_ZOHO}/Despachos_Xhobbies_Report?where=ID==${id_despacho}`
       );
      
       // Create a new Billing Order
@@ -27,7 +27,7 @@ class billingService {
       const tracking_detail = despacho.data.data[0];
 
       const detailOrder = await axios.get(
-        `${BASE_URI_ZOHO}/shopifyDetail?where=ordenID%3D%3D${billing_detail.ID}`
+        `${BASE_URI_ZOHO}/shopifyDetail?where=ordenID==${billing_detail.ID}`
       );
 
       const products = [];
