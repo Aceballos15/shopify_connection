@@ -152,7 +152,7 @@ class orderService {
         const urlCreateOrder = `${BASE_URI_ZOHO}/ordersShopifyCreate`;
         const response = await axios.post(urlCreateOrder, new_order);
         console.log(
-          `Order created succesfully.....ID orden: ${response.data.data}`
+          `Order created succesfully.....ID orden: ${response.data.data[0]}`
         );
 
         const config = {
@@ -369,7 +369,7 @@ class orderService {
       const responseUpdate = await axios.patch(urlToPatchOrder, update_order);
 
       if (responseUpdate.status == 200) {
-        console.log(`Order Updated Success: ${responseUpdate.data.data}`);
+        console.log(`Order Updated Success: ${responseUpdate.data.data[0]}`);
 
         const config = {
           headers: {

@@ -46,6 +46,7 @@ class clientService {
       const createClient = await axios.post(`${BASE_URI_ZOHO}/Clientes`,
         newClient
       );
+      console.log(createClient.data.data) 
       // return ID of creation
       return createClient.data.data[0].ID;
     } catch (error) {
