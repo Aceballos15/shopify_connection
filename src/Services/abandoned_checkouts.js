@@ -59,12 +59,12 @@ const createAbandonecCheckouts = async () => {
 
         if (clientDocument != null ) {
           // Url to fin client in zoho databse "Clientes_Report"
-          const urlClient = `${BASE_URI_ZOHO}/Clientes_Report?where=Documento%3D%3D%22${clientDocument}%22`;
+          const urlClient = `${BASE_URI_ZOHO}/Clientes_Report?where=Documento=="${clientDocument}"`;
           const findClient = await axios.get(urlClient);
 
           // if the API petition found one client or more, capture this ID
-          if (findClient.data.length > 0) {
-            idClient = findClient.data[0].ID;
+          if (findClient.data.data.length > 0) {
+            idClient = findClient.data.data[0].ID;
 
           } else if (customerData.default_address ) {
             // create client if no exists
@@ -97,7 +97,7 @@ const createAbandonecCheckouts = async () => {
 
           var id_product = null;
 
-          const findProductBy_sku = allProducts.data.find((object) => {
+          const findProductBy_sku = allProducts.data.data.find((object) => {
             return object.CodigoTecnosuper == String(product_line.sku);
           });
 
@@ -107,7 +107,7 @@ const createAbandonecCheckouts = async () => {
 
           if (id_product == null) {
             // Find object in zoho array returns
-            const object_product = allProducts.data.find((object) => {
+            const object_product = allProducts.data.data.find((object) => {
               return (
                 object.numberShopify == String(product_line.product_id) &&
                 object.idShopify.includes(product_line.variant_id)
@@ -178,7 +178,7 @@ const createAbandonecCheckouts = async () => {
           const urlCreateOrder =`${BASE_URI_ZOHO}/ordersShopifyCreate`;
           const response = await axios.post(urlCreateOrder, new_order);
           console.log(
-            `Order created succesfully.....ID orden: ${response.data.ID}`
+            `Order created succesfully.....ID orden: ${response.data.data.ID}`
           );
       }
     }else{

@@ -15,7 +15,7 @@ class transactionService {
       const urlToFindTransactions = `${BASE_URI_ZOHO}/shopifyTransactionsReport`; 
       const response = await axios.get(urlToFindTransactions);
 
-      const object_Transaction = response.data.find(
+      const object_Transaction = response.data.data.find(
         (transaction) => transaction.idTransaction == String(transaction.id)
       );
 
@@ -41,8 +41,8 @@ class transactionService {
         );
 
 
-        if (response.data) {
-          console.log(`Transaction created sucess. ID:${response.data.ID}`);
+        if (response.data.data) {
+          console.log(`Transaction created sucess. ID:${response.data.data}`);
         }
 
       }

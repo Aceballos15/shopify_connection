@@ -47,7 +47,7 @@ class clientService {
         newClient
       );
       // return ID of creation
-      return createClient.data.ID;
+      return createClient.data.data[0].ID;
     } catch (error) {
       console.error(error);
     }
@@ -71,8 +71,8 @@ class clientService {
       const response = await axios.get(urlMunicipality);
 
       // if response isn't null
-      if (response.data.length > 0) {
-        idMunicipality = response.data[0].ID;
+      if (response.data.data.length > 0) {
+        idMunicipality = response.data.data[0].ID;
       } else {
         idMunicipality = "1889220000014635007";
       }

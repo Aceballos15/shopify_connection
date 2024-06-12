@@ -37,7 +37,7 @@ class orderService {
         const findClient = await axios.get(urlClient);
 
         // if the API petition found one client or more, capture this ID
-        if (findClient.data.length > 0) {
+        if (findClient.data.data.length > 0) {
           idClient = findClient.data[0].ID;
         } else {
           // create client if no exists
@@ -62,7 +62,7 @@ class orderService {
           
           var id_product = null;
 
-          const findProductBy_sku = allProducts.data.find((object) => {
+          const findProductBy_sku = allProducts.data.data.find((object) => {
             return object.CodigoTecnosuper == String(product_line.sku);
           });
 
@@ -72,7 +72,7 @@ class orderService {
 
           if (id_product == null) {
             // Find object in zoho array returns
-            const object_product = allProducts.data.find((object) => {
+            const object_product = allProducts.data.data.find((object) => {
               return (
                 object.numberShopify == String(product_line.product_id) &&
                 object.idShopify.includes(product_line.variant_id)
@@ -152,7 +152,7 @@ class orderService {
         const urlCreateOrder = `${BASE_URI_ZOHO}/ordersShopifyCreate`;
         const response = await axios.post(urlCreateOrder, new_order);
         console.log(
-          `Order created succesfully.....ID orden: ${response.data.ID}`
+          `Order created succesfully.....ID orden: ${response.data.data}`
         );
 
         const config = {
@@ -197,10 +197,10 @@ class orderService {
       const urlOrder = `${BASE_URI_ZOHO}/ordersShopify?where=orderId%3D%3D%22${idOrder}%22`;
       const findOrder = await axios.get(urlOrder);
       // if order found one element or more, return true validate
-      if (findOrder.data.length > 0) {
+      if (findOrder.data.data.length > 0) {
         return {
           status: true,
-          idOrder: findOrder.data[0].ID,
+          idOrder: findOrder.data.data[0].ID,
         };
         // else return status false
       } else {
@@ -229,10 +229,10 @@ class orderService {
 
         // Patch request and response log
         const updateOrder = await axios.patch(updateOrderUrl, new_data);
-        if (updateOrder.data !== null) {
+        if (updateOrder.data.data.length > 0) {
           console.log(
             `Order Canceled succesfully. Order id: ${JSON.stringify(
-              updateOrder.data
+              updateOrder.data.data
             )}`
           );
           if (order.fulfillments.length > 0) {
@@ -265,8 +265,8 @@ class orderService {
       const findClient = await axios.get(urlClient);
 
       // if the API petition found one client or more, capture this ID
-      if (findClient.data.length > 0) {
-        idClient = findClient.data[0].ID;
+      if (findClient.data.data.length > 0) {
+        idClient = findClient.data.data[0].ID;
       } else {
         // create client if no exists
         const newClient = new clientService();
@@ -287,7 +287,7 @@ class orderService {
         const product_line = order.line_items[index];
         
         var id_product = null;
-        const findProductBy_sku = allProducts.data.find((object) => {
+        const findProductBy_sku = allProducts.data.data.find((object) => {
           return object.CodigoTecnosuper == String(product_line.sku);
         });
 
@@ -297,7 +297,7 @@ class orderService {
 
         if (id_product == null) {
           // Find object in zoho array returns
-          const object_product = allProducts.data.find((object) => {
+          const object_product = allProducts.data.data.find((object) => {
             return (
               object.numberShopify == String(product_line.product_id) &&
               object.idShopify.includes(product_line.variant_id)
@@ -369,7 +369,7 @@ class orderService {
       const responseUpdate = await axios.patch(urlToPatchOrder, update_order);
 
       if (responseUpdate.status == 200) {
-        console.log(`Order Updated Success: ${responseUpdate.data.ID}`);
+        console.log(`Order Updated Success: ${responseUpdate.data.data}`);
 
         const config = {
           headers: {

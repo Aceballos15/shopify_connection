@@ -26,8 +26,6 @@ class billingService {
       const billing_detail = zoho_order.data.data[0];
       const tracking_detail = despacho.data.data[0];
 
-      console.log(billing_detail.data);
-      console.log(billing_detail.data);
       const detailOrder = await axios.get(
         `${BASE_URI_ZOHO}/shopifyDetail?where=ordenID==${billing_detail.ID}`
       );
@@ -35,8 +33,8 @@ class billingService {
       const products = [];
       var totalIva = 0;
 
-      for(let index = 0; index <  detailOrder.data.length; index++) {
-        const item =  detailOrder.data[index];
+      for(let index = 0; index <  detailOrder.data.data.length; index++) {
+        const item =  detailOrder.data.data[index];
         const product = {
             Producto: item.productDetail.ID,
             Cantidad: parseInt(item.Cantidad),
@@ -109,7 +107,7 @@ class billingService {
 
       if (responseBilling.status == 200 && responseBilling.data != null ) {
         console.log(
-          `Billing Created successfully... ${responseBilling.data.data.ID}`
+          `Billing Created successfully... ${responseBilling.data.data[0].ID}`
         );  
 
         // if transport information is "Propia", update tracking information for this order 
