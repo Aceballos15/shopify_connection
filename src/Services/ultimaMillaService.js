@@ -7,13 +7,13 @@ class transportClass {
 
   // Create a new order in transport serice
   async createOrder(orderData) {
-    
     // Json for headers petition
     const config = {
       headers: {
         "Custom-Auth-Token": process.env.TOKEN_LUXURY,
       },
     };
+    
     try {
       // Create a luxury order
       const responseCreate = await axios.post(
@@ -22,6 +22,7 @@ class transportClass {
         config
       );
       var codeTransport = null; 
+
       if (responseCreate.data) {
         codeTransport = responseCreate.data.data.reference;
       }
@@ -29,6 +30,7 @@ class transportClass {
         code: codeTransport,
       };
     } catch (error) {
+      console.log(error);
       return {
         code: null,
       };

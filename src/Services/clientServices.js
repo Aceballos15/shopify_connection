@@ -47,7 +47,7 @@ class clientService {
         newClient
       );
       // return ID of creation
-      return await createClient.data.data[0].ID;
+      return createClient.data.data.ID;
     } catch (error) {
       console.error(error);
     }

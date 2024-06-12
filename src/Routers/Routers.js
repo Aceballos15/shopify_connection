@@ -123,7 +123,7 @@ router.post("/create_billing", async (req, res) => {
 
 router.post("/create_milla_guide", async (req, res) => {
   try {
-    data_response = req.body;
+    data_response = req.body
     const newGuide = new guideService();
     const createGuide = await newGuide.createOrder(req.body);
     var data_response = {};

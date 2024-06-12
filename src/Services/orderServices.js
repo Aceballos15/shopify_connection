@@ -62,14 +62,19 @@ class orderService {
           
           var id_product = null;
 
-          const findProductBy_sku = allProducts.data.data.find((object) => {
-            return object.CodigoTecnosuper == String(product_line.sku);
-          });
+          const findProductBy_sku = async () => {
+            const findProduct = await axios.get(`${BASE_URI_ZOHO}/shopifyProducts?where=CodigoTecnosuper=="${product_line.sku}"`);
+            if (findProduct.data.data.length > 0) {
+              return findProduct.data.data[0].ID; 
+            }else
+            {
+              return null;
+            }
+          }; 
 
-          if (findProductBy_sku != null && findProductBy_sku != undefined) {
-            id_product = findProductBy_sku.ID;
-          }
+          id_product = await findProductBy_sku();
 
+          console.log(id_product) 
           if (id_product == null) {
             // Find object in zoho array returns
             const object_product = allProducts.data.data.find((object) => {
@@ -101,9 +106,14 @@ class orderService {
               parseInt(product_line.quantity);
           }
 
+          const buscarProduct = {
+            sku: product_line.sku, 
+            id_product: product_line.product_id,
+            id_variant: product_line.variant_id
+          }
           // product map for detail
           const product_detail = {
-            Producto: product_line.title,
+            Producto: String(buscarProduct),
             productDetail: id_product,
             Precio: parseFloat(priceProduct),
             Cantidad: parseInt(product_line.quantity),
@@ -287,14 +297,21 @@ class orderService {
         const product_line = order.line_items[index];
         
         var id_product = null;
-        const findProductBy_sku = allProducts.data.data.find((object) => {
-          return object.CodigoTecnosuper == String(product_line.sku);
-        });
 
-        if (findProductBy_sku != null && findProductBy_sku != undefined) {
-          id_product = findProductBy_sku.ID;
-        }
+          const findProductBy_sku = async () => {
+            const findProduct = await axios.get(`${BASE_URI_ZOHO}/shopifyProducts?where=CodigoTecnosuper=="${product_line.sku}"`);
+            if (findProduct.data.data.length > 0) {
+              return findProduct.data.data[0].ID; 
+            }else
+            {
+              return null;
+            }
+          }; 
 
+          id_product = await findProductBy_sku();
+
+          console.log(id_product) 
+          
         if (id_product == null) {
           // Find object in zoho array returns
           const object_product = allProducts.data.data.find((object) => {
@@ -307,6 +324,7 @@ class orderService {
           if (object_product !== null && object_product !== undefined) {
             id_product = object_product.ID;
           } else {
+            console.log("Product creation")
             // if doesn´t exists product in zoho database, create a new product (Call product service)
             const newServiceproduct = new productService();
             id_product = await newServiceproduct.createProduct(
