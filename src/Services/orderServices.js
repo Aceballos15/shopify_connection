@@ -38,7 +38,7 @@ class orderService {
 
         // if the API petition found one client or more, capture this ID
         if (findClient.data.data.length > 0) {
-          idClient = findClient.data[0].ID;
+          idClient = findClient.data.data[0].ID;
         } else {
           // create client if no exists
           const newClient = new clientService();
